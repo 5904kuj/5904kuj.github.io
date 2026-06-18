@@ -1,0 +1,1621 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>콘텐츠 전달 방식 연구</title>
+<style>
+:root{
+  --bg:#F7F4EF;
+  --surface:#FFFFFF;
+  --ink:#2B2A27;
+  --ink-soft:#7A766E;
+  --line:#E3DEd4;
+  --blue:#4A6FA5;
+  --clay:#C2785A;
+  --sage:#8DA17E;
+  --radius:12px;
+  --font-display:Georgia,'Noto Serif KR',serif;
+  --font-body:-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic',sans-serif;
+}
+*{box-sizing:border-box;}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:var(--font-body);
+  line-height:1.6;
+  -webkit-font-smoothing:antialiased;
+}
+#app{
+  max-width:720px;
+  margin:0 auto;
+  padding:24px 20px 80px;
+}
+.eyebrow{
+  font-size:13px;
+  letter-spacing:0.08em;
+  color:var(--ink-soft);
+  text-transform:uppercase;
+  margin-bottom:6px;
+}
+h1,h2,h3{
+  font-family:var(--font-display);
+  font-weight:700;
+  margin:0 0 12px;
+}
+h1{font-size:28px;}
+h2{font-size:22px;}
+h3{font-size:17px;}
+p{margin:0 0 14px;}
+.card{
+  background:var(--surface);
+  border:1px solid var(--line);
+  border-radius:var(--radius);
+  padding:24px;
+  margin-bottom:20px;
+}
+.progress-wrap{
+  display:flex;
+  gap:6px;
+  margin-bottom:24px;
+}
+.progress-seg{
+  flex:1;
+  height:4px;
+  background:var(--line);
+  border-radius:2px;
+  overflow:hidden;
+}
+.progress-seg.done .progress-fill{width:100%;}
+.progress-seg.active .progress-fill{width:50%;}
+.progress-fill{
+  height:100%;
+  width:0%;
+  background:var(--blue);
+  transition:width .4s ease;
+}
+.fact-block{
+  border-top:1px solid var(--line);
+  padding:20px 0;
+}
+.fact-block:first-of-type{border-top:none;padding-top:0;}
+.fact-num{
+  display:inline-block;
+  font-family:var(--font-display);
+  font-size:13px;
+  color:var(--blue);
+  border:1px solid var(--blue);
+  border-radius:50%;
+  width:22px;height:22px;
+  text-align:center;
+  line-height:20px;
+  margin-bottom:10px;
+}
+.fact-text{
+  font-size:16px;
+  margin-bottom:16px;
+}
+.widget{
+  background:#FBFAF7;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:16px;
+}
+.slider{
+  width:100%;
+  margin:8px 0;
+  accent-color:var(--blue);
+}
+.readout{
+  font-size:14px;
+  color:var(--ink-soft);
+  margin-bottom:8px;
+}
+.readout b{color:var(--ink);font-weight:600;}
+.bar-bg{
+  background:#EFEBE3;
+  border-radius:6px;
+  height:14px;
+  overflow:hidden;
+  margin:6px 0;
+  position:relative;
+}
+.bar-fill{
+  height:100%;
+  border-radius:6px;
+  transition:width .25s ease;
+  background:var(--clay);
+}
+.bar-fill.sage{background:var(--sage);}
+.bar-fill.blue{background:var(--blue);}
+.bar-label{font-size:13px;color:var(--ink-soft);margin-bottom:2px;}
+.zone-msg{
+  font-size:13px;
+  margin-top:8px;
+  padding:6px 10px;
+  border-radius:6px;
+  background:#EEF2EC;
+  color:#5C7156;
+  display:inline-block;
+}
+.zone-msg.warn{background:#FBEDE6;color:#A55A38;}
+.btn{
+  font-family:var(--font-body);
+  font-size:15px;
+  font-weight:600;
+  padding:11px 22px;
+  border-radius:8px;
+  border:none;
+  cursor:pointer;
+  background:var(--blue);
+  color:#fff;
+  transition:opacity .2s;
+}
+.btn:hover{opacity:.88;}
+.btn:disabled{background:#C9C5BC;cursor:not-allowed;}
+.btn.secondary{
+  background:transparent;
+  color:var(--ink);
+  border:1px solid var(--line);
+}
+.btn-row{margin-top:24px;display:flex;justify-content:flex-end;gap:10px;}
+.likert{
+  margin-bottom:24px;
+}
+.likert-q{font-size:15px;margin-bottom:10px;}
+.likert-scale{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:4px;
+}
+.likert-scale label{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  font-size:12px;
+  color:var(--ink-soft);
+  cursor:pointer;
+  flex:1;
+}
+.likert-scale input{
+  margin-bottom:4px;
+  accent-color:var(--blue);
+  width:18px;height:18px;
+}
+.scale-endlabels{
+  display:flex;
+  justify-content:space-between;
+  font-size:12px;
+  color:var(--ink-soft);
+  margin-top:4px;
+}
+.quiz-q{margin-bottom:22px;}
+.quiz-q p{font-weight:600;margin-bottom:10px;}
+.quiz-options label{
+  display:block;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  margin-bottom:6px;
+  cursor:pointer;
+  font-size:14px;
+}
+.quiz-options input{
+  margin-right:8px;
+  accent-color:var(--blue);
+}
+.intro-row{margin-bottom:16px;}
+.intro-row label{display:block;font-weight:600;margin-bottom:6px;font-size:14px;}
+.intro-row input[type=text]{
+  width:100%;
+  padding:10px 12px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-size:15px;
+  font-family:var(--font-body);
+}
+.checkbox-row{
+  display:flex;
+  align-items:flex-start;
+  gap:10px;
+  margin-bottom:16px;
+}
+.checkbox-row input{margin-top:4px;width:18px;height:18px;flex-shrink:0;}
+.checkbox-row label{font-size:14px;}
+.svg-static{width:100%;height:auto;display:block;}
+.fault-cards{display:flex;gap:8px;margin-bottom:12px;}
+.fault-cards button{
+  flex:1;
+  padding:10px 6px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  background:#fff;
+  cursor:pointer;
+  font-family:var(--font-body);
+  font-size:13px;
+  font-weight:600;
+  color:var(--ink-soft);
+}
+.fault-cards button.active{
+  border-color:var(--blue);
+  color:var(--blue);
+  background:#EEF2F8;
+}
+.crack-msg{
+  margin-top:8px;
+  font-size:13px;
+  color:var(--clay);
+  font-weight:600;
+  min-height:18px;
+}
+textarea#data-out{
+  width:100%;
+  height:140px;
+  font-family:monospace;
+  font-size:12px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:10px;
+}
+@media (max-width:480px){
+  #app{padding:16px 14px 60px;}
+  h1{font-size:22px;}
+  h2{font-size:19px;}
+  .likert-scale label{font-size:10px;}
+}
+
+/* ---- Visual effect keyframes ---- */
+@keyframes shake-light{
+  0%,100%{transform:translate(0,0);}
+  25%{transform:translate(-1px,1px);}
+  50%{transform:translate(1px,-1px);}
+  75%{transform:translate(-1px,-1px);}
+}
+@keyframes shake-heavy{
+  0%,100%{transform:translate(0,0) rotate(0);}
+  10%{transform:translate(-4px,2px) rotate(-0.5deg);}
+  20%{transform:translate(4px,-2px) rotate(0.5deg);}
+  30%{transform:translate(-3px,-3px) rotate(-0.3deg);}
+  40%{transform:translate(3px,3px) rotate(0.3deg);}
+  50%{transform:translate(-2px,2px) rotate(-0.2deg);}
+  60%{transform:translate(2px,-2px) rotate(0.2deg);}
+  70%{transform:translate(-3px,1px) rotate(-0.4deg);}
+  80%{transform:translate(3px,-1px) rotate(0.4deg);}
+  90%{transform:translate(-1px,1px) rotate(0);}
+}
+@keyframes flash-red{
+  0%{background:#FBFAF7;}
+  20%{background:#FBE4D9;}
+  100%{background:#FBFAF7;}
+}
+@keyframes pulse-glow{
+  0%,100%{box-shadow:0 0 0 0 rgba(141,161,126,0);}
+  50%{box-shadow:0 0 0 8px rgba(141,161,126,0.25);}
+}
+@keyframes steam-rise{
+  0%{transform:translateY(0) scaleX(1);opacity:0.7;}
+  100%{transform:translateY(-30px) scaleX(1.6);opacity:0;}
+}
+@keyframes fill-rise{
+  from{height:0;}
+  to{height:var(--fill-h,60%);}
+}
+@keyframes ripple-out{
+  0%{width:10px;height:10px;opacity:.9;border-width:3px;}
+  100%{width:var(--maxsize,200px);height:var(--maxsize,200px);opacity:0;border-width:1px;}
+}
+@keyframes particle-pop{
+  0%{transform:scale(0);}
+  60%{transform:scale(1.2);}
+  100%{transform:scale(1);}
+}
+.shake-light{animation:shake-light .3s ease;}
+.shake-heavy{animation:shake-heavy .8s ease;}
+.flash-red{animation:flash-red .8s ease;}
+.pulse-glow{animation:pulse-glow 1.6s ease infinite;}
+.global-shake{animation:shake-heavy .9s ease;}
+
+/* ---- Coffee widget visuals ---- */
+.coffee-scene{
+  position:relative;
+  background:linear-gradient(180deg, #FBFAF7 0%, #F4ECDD 100%);
+  border-radius:8px;
+  padding:14px;
+  margin-bottom:10px;
+  transition:background .4s ease;
+  overflow:hidden;
+}
+.coffee-scene.hot{background:linear-gradient(180deg,#F4ECDD 0%,#F2C9A0 100%);}
+.coffee-scene.toohot{background:linear-gradient(180deg,#F2C9A0 0%,#E89D7A 100%);}
+.coffee-scene.cold{background:linear-gradient(180deg,#EFEBE3 0%,#DDE5EC 100%);}
+.steam{position:absolute;left:50%;bottom:60%;width:6px;height:18px;background:rgba(255,255,255,0.6);border-radius:50%;opacity:0;pointer-events:none;}
+.steam.s1{animation:steam-rise 2s ease-in-out infinite;}
+.steam.s2{animation:steam-rise 2s ease-in-out infinite .4s;left:calc(50% - 10px);}
+.steam.s3{animation:steam-rise 2s ease-in-out infinite .8s;left:calc(50% + 10px);}
+.cup-svg{display:block;margin:0 auto;}
+.particle-grid{
+  display:grid;
+  gap:4px;
+  justify-content:center;
+  padding:10px 0;
+  min-height:60px;
+}
+.particle{
+  background:#7C5A3D;
+  border-radius:50%;
+  animation:particle-pop .4s ease;
+}
+.ratio-vis{
+  display:flex;
+  align-items:flex-end;
+  gap:14px;
+  height:80px;
+  padding:8px 4px;
+  justify-content:center;
+}
+.ratio-bar{
+  width:34px;
+  border-radius:6px 6px 0 0;
+  transition:height .35s ease, background .3s ease;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  color:#fff;
+  font-size:11px;
+  font-weight:600;
+  padding-bottom:4px;
+}
+.ratio-coffee{background:#7C5A3D;}
+.ratio-water{background:#6A93C0;}
+
+/* ---- Quake widget visuals ---- */
+.stress-scene{
+  position:relative;
+  background:#FBFAF7;
+  border-radius:8px;
+  padding:14px;
+  transition:background .3s ease;
+}
+.stress-scene[data-level="1"]{background:#FBF5E8;}
+.stress-scene[data-level="2"]{background:#FBE9D0;}
+.stress-scene[data-level="3"]{background:#FBD9C0;}
+.rock-svg{display:block;width:100%;}
+.rock-body{fill:#D8D2C4;stroke:#A89E8C;stroke-width:1.5;transition:fill .3s ease;}
+.rock-body.stressed-1{fill:#E6D6BD;}
+.rock-body.stressed-2{fill:#E8C5A0;}
+.rock-body.stressed-3{fill:#E5A480;}
+.crack-line{stroke:#5C2E18;stroke-width:2.5;fill:none;stroke-dasharray:300;stroke-dashoffset:300;transition:stroke-dashoffset .25s ease;}
+.crack-line.shown{stroke-dashoffset:0;}
+.mag-scene{
+  position:relative;
+  background:linear-gradient(180deg,#FBFAF7 0%,#F4ECDD 100%);
+  border-radius:8px;
+  padding:14px;
+  transition:background .35s ease;
+}
+.mag-scene[data-level="1"]{background:linear-gradient(180deg,#FBE9D0 0%,#F2C9A0 100%);}
+.mag-scene[data-level="2"]{background:linear-gradient(180deg,#F2C9A0 0%,#E89D7A 100%);}
+.mag-scene[data-level="3"]{background:linear-gradient(180deg,#E89D7A 0%,#B85A3A 100%);color:#fff;}
+.mag-scene[data-level="3"] .readout{color:rgba(255,255,255,0.85);}
+.mag-scene[data-level="3"] .readout b{color:#fff;}
+.energy-dots{
+  display:flex;
+  flex-wrap:wrap;
+  gap:3px;
+  margin:8px 0;
+  min-height:24px;
+}
+.energy-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:var(--clay);
+  animation:particle-pop .3s ease;
+}
+.epicenter-svg{
+  display:block;width:100%;height:160px;
+  background:radial-gradient(ellipse at center, #FBF5E8 0%, #EAE6DC 100%);
+  border-radius:8px;
+}
+.fault-canvas-svg{
+  width:100%;height:90px;
+  display:block;
+  background:#FBFAF7;
+  border-radius:6px;
+}
+.two-col{display:flex;gap:14px;flex-wrap:wrap;}
+.two-col > div{flex:1;min-width:140px;}
+.segments{display:flex;gap:6px;margin-top:6px;}
+.segment{
+  flex:1;
+  text-align:center;
+  font-size:12px;
+  padding:10px 4px;
+  border:1px solid var(--line);
+  border-radius:6px;
+  color:var(--ink-soft);
+  background:#fff;
+  transition:all .2s;
+}
+.segment.active{
+  border-color:var(--blue);
+  background:#EEF2F8;
+  color:var(--blue);
+  font-weight:600;
+}
+.plate-stage{position:relative;height:90px;background:#EAE6DC;border-radius:8px;overflow:hidden;margin-bottom:8px;}
+.plate{
+  position:absolute;top:15px;width:42%;height:60px;border-radius:6px;
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:12px;font-weight:600;
+  transition:left .6s ease, right .6s ease;
+}
+.plate-left{left:4%;background:var(--sage);}
+.plate-right{right:4%;background:var(--blue);}
+.conv-label{position:absolute;bottom:4px;width:100%;text-align:center;font-size:11px;color:var(--ink-soft);}
+.crack-svg{width:100%;height:70px;display:block;}
+.crack-path{stroke:var(--clay);stroke-width:3;fill:none;stroke-dasharray:240;stroke-dashoffset:240;transition:stroke-dashoffset .6s ease;}
+.crack-path.show{stroke-dashoffset:0;}
+.quake-stage{position:relative;width:100%;height:140px;display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.quake-circle{
+  position:absolute;border:2px solid var(--blue);border-radius:50%;
+  width:10px;height:10px;opacity:0;
+}
+.quake-circle.anim{animation:quakeExpand 1.4s ease-out forwards;}
+@keyframes quakeExpand{
+  0%{width:10px;height:10px;opacity:.9;}
+  100%{width:var(--maxsize,150px);height:var(--maxsize,150px);opacity:0;}
+}
+.quake-center{
+  position:absolute;width:8px;height:8px;background:var(--clay);border-radius:50%;z-index:2;
+}
+.fault-diagram{
+  position:relative;height:90px;border:1px solid var(--line);border-radius:6px;
+  overflow:hidden;margin-top:10px;background:#fff;
+}
+.fault-block{
+  position:absolute;width:62%;height:40px;background:#D8D2C4;border:1px solid #B7B0A2;
+  display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink-soft);
+  transition:transform .6s ease;
+}
+.fault-block.bk-top{top:8px;left:19%;}
+.fault-block.bk-bottom{bottom:8px;left:19%;}
+.fault-block.shift-normal-top{transform:translate(8px,18px);}
+.fault-block.shift-normal-bottom{transform:translate(-8px,-2px);}
+.fault-block.shift-reverse-top{transform:translate(-8px,-18px);}
+.fault-block.shift-reverse-bottom{transform:translate(8px,2px);}
+.fault-block.shift-strike-top{transform:translateX(30px);}
+.fault-block.shift-strike-bottom{transform:translateX(-30px);}
+.static-row{display:flex;gap:10px;align-items:center;justify-content:space-around;text-align:center;}
+.static-row .label{font-size:12px;color:var(--ink-soft);margin-top:6px;}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+/* =========================================================
+   DATA SUBMISSION CONFIG
+   아래에 Google Apps Script 웹앱 URL을 붙여넣으면, 실험 종료 시
+   결과가 자동으로 구글 시트에 전송됩니다. (설정 방법은 별도 안내)
+   비워두면 자동 전송 없이 다운로드/복사만 가능합니다.
+========================================================= */
+const SHEET_ENDPOINT = "https://script.google.com/macros/s/AKfycbyCoqNtlX0RQUT4qFYnWWSOAooioKGBIJKSE6H8_U01zpE0znIxbG4izXonTdCCzYBN1Q/exec";
+
+/* =========================================================
+   CONTENT DATA
+========================================================= */
+const CONTENT = {
+  A: {
+    title: "커피 추출의 과학",
+    facts: [
+      "추출 온도가 높을수록 쓴맛을 내는 성분이 더 많이 녹아 나옵니다. 일반적으로 90~96도가 적정 추출 온도입니다.",
+      "원두 입자가 작을수록 물과 닿는 표면적이 넓어져 추출 속도가 빨라집니다. 너무 가늘게 갈면 과다추출 위험이 커집니다.",
+      "추출이 진행될수록 산미 → 단맛 → 쓴맛 순서로 성분이 녹아 나옵니다.",
+      "원두와 물의 비율이 농도를 결정합니다. 일반적인 비율은 1:15~1:17입니다.",
+      "과소추출은 시고 밍밍한 맛을, 과다추출은 쓰고 떫은 맛을 냅니다."
+    ],
+    quiz: [
+      {q:"커피 추출에 적정한 온도 범위는?", opts:["70~80도","80~90도","90~96도","96~100도"], a:2},
+      {q:"원두를 더 가늘게 갈수록 일어나는 현상은?", opts:["추출 속도가 느려진다","추출 속도가 빨라진다","맛에 영향이 없다","산미가 사라진다"], a:1},
+      {q:"추출이 진행되는 동안 성분이 녹아 나오는 순서는?", opts:["쓴맛 → 단맛 → 산미","산미 → 단맛 → 쓴맛","단맛 → 산미 → 쓴맛","순서는 없다"], a:1},
+      {q:"일반적인 원두 : 물 비율은?", opts:["1:5~1:7","1:10~1:12","1:15~1:17","1:20~1:25"], a:2},
+      {q:"과소추출된 커피의 맛 특징은?", opts:["쓰고 떫다","시고 밍밍하다","균형 잡혀 있다","단맛이 강하다"], a:1}
+    ]
+  },
+  B: {
+    title: "지진은 왜 일어나는가",
+    facts: [
+      "지구 표면은 여러 개의 판으로 나뉘어 있고, 맨틀의 대류로 인해 매우 서서히 이동합니다.",
+      "판의 경계에서 응력이 쌓이다가 암석이 더 버티지 못하면 끊어지며 단층이 생기고, 이때 지진이 발생합니다.",
+      "지진의 규모(매그니튜드)는 방출 에너지의 크기를 나타내며, 1 증가할 때마다 에너지는 약 32배 커집니다.",
+      "진도는 특정 지점에서 사람이 느끼는 흔들림의 정도로, 진앙과의 거리와 지반 종류에 따라 달라집니다.",
+      "단층의 종류(정단층, 역단층, 횡단층)에 따라 지진이 발생하는 방식과 지표 변화 모습이 다릅니다."
+    ],
+    quiz: [
+      {q:"판이 이동하는 원동력은?", opts:["태양열","맨틀의 대류","해류","중력"], a:1},
+      {q:"지진이 발생하는 직접적인 원인은?", opts:["화산 폭발","단층의 끊어짐","해일","대기압 변화"], a:1},
+      {q:"매그니튜드가 1 증가하면 에너지는 약 몇 배 증가하는가?", opts:["2배","10배","32배","100배"], a:2},
+      {q:"진도에 영향을 주는 요인은?", opts:["진앙과의 거리, 지반 종류","시간대","기온","단층의 색깔"], a:0},
+      {q:"단층의 종류에 포함되지 않는 것은?", opts:["정단층","역단층","횡단층","환단층"], a:3}
+    ]
+  }
+};
+
+const ENGAGEMENT_ITEMS = [
+  "이 콘텐츠를 보는 동안 시간이 빨리 지나가는 느낌이 들었다.",
+  "이 콘텐츠에 집중해서 다른 생각이 들지 않았다.",
+  "이 콘텐츠가 재미있었다.",
+  "이 콘텐츠를 더 탐색해보고 싶다는 생각이 들었다.",
+  "이 콘텐츠를 이용하는 과정이 즐거웠다."
+];
+
+/* =========================================================
+   STATE
+========================================================= */
+let state = {
+  pid: "",
+  group: null,
+  order: [],
+  flow: ["intro"],
+  stepIndex: 0,
+  modules: [], // {topic, condition, interactions, timeMs, engagement[], cogload, quizAnswers[], quizScore}
+  _moduleStartTime: 0,
+  _interactionCount: 0
+};
+
+function getOrder(group){
+  if(group === 1) return [
+    {topic:"A", condition:"interactive"},
+    {topic:"B", condition:"static"}
+  ];
+  return [
+    {topic:"A", condition:"static"},
+    {topic:"B", condition:"interactive"}
+  ];
+}
+
+function resetState(){
+  state.pid = "";
+  state.group = null;
+  state.order = [];
+  state.flow = ["intro"];
+  state.stepIndex = 0;
+  state.modules = [];
+  state._moduleStartTime = 0;
+  state._interactionCount = 0;
+}
+
+/* =========================================================
+   ROUTER
+========================================================= */
+const app = document.getElementById("app");
+
+function goNext(){
+  state.stepIndex++;
+  render();
+  window.scrollTo(0,0);
+}
+
+function progressBar(activeIndex, total){
+  let html = '<div class="progress-wrap">';
+  for(let i=0;i<total;i++){
+    let cls = "progress-seg";
+    if(i < activeIndex) cls += " done";
+    else if(i === activeIndex) cls += " active";
+    html += `<div class="${cls}"><div class="progress-fill"></div></div>`;
+  }
+  html += "</div>";
+  return html;
+}
+
+function render(){
+  const step = state.flow[state.stepIndex];
+  if(step === "intro") return renderIntro();
+  if(step.startsWith("module")) return renderModule(parseInt(step.slice(6)));
+  if(step.startsWith("survey")) return renderSurvey(parseInt(step.slice(6)));
+  if(step.startsWith("quiz")) return renderQuiz(parseInt(step.slice(4)));
+  if(step === "end") return renderEnd();
+}
+
+/* =========================================================
+   SCREEN: INTRO
+========================================================= */
+function renderIntro(){
+  const urlGroup = new URLSearchParams(location.search).get("g");
+  app.innerHTML = `
+    <div class="eyebrow">콘텐츠 전달 방식 연구</div>
+    <h1>실험 안내</h1>
+    <div class="card">
+      <p>이 실험은 콘텐츠가 제시되는 방식이 정보 전달에 어떤 영향을 주는지 살펴보는 연구입니다. 두 개의 짧은 콘텐츠를 차례로 살펴본 뒤, 각각에 대한 간단한 설문과 퀴즈에 응답하시면 됩니다. 전체 소요 시간은 약 10~15분입니다.</p>
+      <p>응답은 익명으로 처리되며 연구 목적으로만 사용됩니다.</p>
+    </div>
+    <div class="card">
+      <div class="intro-row">
+        <label for="pid-input">참가자 코드</label>
+        <input type="text" id="pid-input" placeholder="예: P01">
+      </div>
+      <div class="intro-row" id="group-row">
+        ${urlGroup ? `<label>배정된 그룹</label><p style="margin:0;">그룹 ${urlGroup}</p>`
+        : `<label for="group-select">그룹 선택 (연구자 안내에 따라 선택)</label>
+           <select id="group-select" style="width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;font-size:15px;">
+             <option value="">선택해주세요</option>
+             <option value="1">그룹 1</option>
+             <option value="2">그룹 2</option>
+           </select>`}
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="consent-check">
+        <label for="consent-check">위 내용을 확인하였으며, 연구 참여에 동의합니다.</label>
+      </div>
+      <div class="btn-row">
+        <button class="btn" id="start-btn" disabled>시작하기</button>
+      </div>
+    </div>
+  `;
+
+  const pidInput = document.getElementById("pid-input");
+  const consentCheck = document.getElementById("consent-check");
+  const groupSelect = document.getElementById("group-select");
+  const startBtn = document.getElementById("start-btn");
+
+  function validate(){
+    const pidOk = pidInput.value.trim().length > 0;
+    const consentOk = consentCheck.checked;
+    const groupOk = urlGroup || (groupSelect && groupSelect.value);
+    startBtn.disabled = !(pidOk && consentOk && groupOk);
+  }
+  pidInput.addEventListener("input", validate);
+  consentCheck.addEventListener("change", validate);
+  if(groupSelect) groupSelect.addEventListener("change", validate);
+
+  startBtn.addEventListener("click", () => {
+    state.pid = pidInput.value.trim();
+    state.group = parseInt(urlGroup || groupSelect.value);
+    state.order = getOrder(state.group);
+    state.flow = ["intro","module0","survey0","quiz0","module1","survey1","quiz1","end"];
+    state.modules = state.order.map(o => ({
+      topic:o.topic, condition:o.condition,
+      interactions:0, timeMs:0,
+      engagement:[null,null,null,null,null], cogload:null,
+      quizAnswers:[null,null,null,null,null], quizScore:0
+    }));
+    goNext();
+  });
+}
+
+/* =========================================================
+   SCREEN: MODULE (content)
+========================================================= */
+function renderModule(modIdx){
+  const order = state.order[modIdx];
+  const content = CONTENT[order.topic];
+  state._interactionCount = 0;
+  state._moduleStartTime = Date.now();
+
+  let factsHtml = "";
+  content.facts.forEach((fact, i) => {
+    const widgetHtml = order.condition === "interactive"
+      ? getInteractiveWidget(order.topic, i)
+      : getStaticWidget(order.topic, i);
+    factsHtml += `
+      <div class="fact-block">
+        <div class="fact-num">${i+1}</div>
+        <p class="fact-text">${fact}</p>
+        <div class="widget" data-fact="${i}">${widgetHtml}</div>
+      </div>`;
+  });
+
+  app.innerHTML = `
+    <div class="eyebrow">${modIdx+1} / 2 단계 · 콘텐츠</div>
+    ${progressBar(modIdx*4, 8)}
+    <h2>${content.title}</h2>
+    ${factsHtml}
+    <div class="btn-row">
+      <button class="btn" id="module-next">다음</button>
+    </div>
+  `;
+
+  if(order.condition === "interactive"){
+    initWidgets(order.topic, app);
+  }
+
+  document.getElementById("module-next").addEventListener("click", () => {
+    state.modules[modIdx].timeMs = Date.now() - state._moduleStartTime;
+    state.modules[modIdx].interactions = state._interactionCount;
+    goNext();
+  });
+}
+
+/* =========================================================
+   SCREEN: SURVEY (engagement + cognitive load)
+========================================================= */
+function renderSurvey(modIdx){
+  let likertHtml = "";
+  ENGAGEMENT_ITEMS.forEach((item, i) => {
+    likertHtml += `
+      <div class="likert">
+        <div class="likert-q">${i+1}. ${item}</div>
+        <div class="likert-scale">
+          ${[1,2,3,4,5,6,7].map(v => `
+            <label><input type="radio" name="eng${i}" value="${v}">${v}</label>
+          `).join("")}
+        </div>
+        <div class="scale-endlabels"><span>전혀 그렇지 않다</span><span>매우 그렇다</span></div>
+      </div>`;
+  });
+
+  app.innerHTML = `
+    <div class="eyebrow">${modIdx+1} / 2 단계 · 설문</div>
+    ${progressBar(modIdx*4+1, 8)}
+    <h2>방금 본 콘텐츠에 대해</h2>
+    <div class="card">
+      <h3>몰입도</h3>
+      ${likertHtml}
+    </div>
+    <div class="card">
+      <h3>인지적 노력</h3>
+      <div class="likert-q">방금 본 내용을 이해하는 데 들인 정신적 노력의 정도를 평가해 주세요.</div>
+      <div class="likert-scale">
+        ${[1,2,3,4,5,6,7,8,9].map(v => `
+          <label><input type="radio" name="cogload" value="${v}">${v}</label>
+        `).join("")}
+      </div>
+      <div class="scale-endlabels"><span>매우 적은 노력</span><span>매우 많은 노력</span></div>
+    </div>
+    <div class="btn-row">
+      <button class="btn" id="survey-next" disabled>다음</button>
+    </div>
+  `;
+
+  const allRadios = app.querySelectorAll('input[type=radio]');
+  const nextBtn = document.getElementById("survey-next");
+  function validate(){
+    let allFilled = true;
+    for(let i=0;i<5;i++){
+      if(!app.querySelector(`input[name=eng${i}]:checked`)) allFilled = false;
+    }
+    if(!app.querySelector('input[name=cogload]:checked')) allFilled = false;
+    nextBtn.disabled = !allFilled;
+  }
+  allRadios.forEach(r => r.addEventListener("change", validate));
+
+  nextBtn.addEventListener("click", () => {
+    for(let i=0;i<5;i++){
+      state.modules[modIdx].engagement[i] = parseInt(app.querySelector(`input[name=eng${i}]:checked`).value);
+    }
+    state.modules[modIdx].cogload = parseInt(app.querySelector('input[name=cogload]:checked').value);
+    goNext();
+  });
+}
+
+/* =========================================================
+   SCREEN: QUIZ
+========================================================= */
+function renderQuiz(modIdx){
+  const topic = state.order[modIdx].topic;
+  const quiz = CONTENT[topic].quiz;
+
+  let quizHtml = "";
+  quiz.forEach((q, i) => {
+    quizHtml += `
+      <div class="quiz-q">
+        <p>${i+1}. ${q.q}</p>
+        <div class="quiz-options">
+          ${q.opts.map((opt, j) => `
+            <label><input type="radio" name="quiz${i}" value="${j}"> ${opt}</label>
+          `).join("")}
+        </div>
+      </div>`;
+  });
+
+  const isLast = modIdx === state.order.length - 1;
+
+  app.innerHTML = `
+    <div class="eyebrow">${modIdx+1} / 2 단계 · 이해도 확인</div>
+    ${progressBar(modIdx*4+2, 8)}
+    <h2>${CONTENT[topic].title} 관련 퀴즈</h2>
+    <div class="card">${quizHtml}</div>
+    <div class="btn-row">
+      <button class="btn" id="quiz-next" disabled>${isLast ? "제출 및 결과 보기" : "다음 콘텐츠로"}</button>
+    </div>
+  `;
+
+  const nextBtn = document.getElementById("quiz-next");
+  function validate(){
+    let allFilled = true;
+    for(let i=0;i<5;i++){
+      if(!app.querySelector(`input[name=quiz${i}]:checked`)) allFilled = false;
+    }
+    nextBtn.disabled = !allFilled;
+  }
+  app.querySelectorAll('input[type=radio]').forEach(r => r.addEventListener("change", validate));
+
+  nextBtn.addEventListener("click", () => {
+    let score = 0;
+    for(let i=0;i<5;i++){
+      const ans = parseInt(app.querySelector(`input[name=quiz${i}]:checked`).value);
+      state.modules[modIdx].quizAnswers[i] = ans;
+      if(ans === quiz[i].a) score++;
+    }
+    state.modules[modIdx].quizScore = score;
+    goNext();
+  });
+}
+
+/* =========================================================
+   SCREEN: END
+========================================================= */
+function renderEnd(){
+  const data = {
+    pid: state.pid,
+    group: state.group,
+    modules: state.modules
+  };
+  const json = JSON.stringify(data, null, 2);
+
+  app.innerHTML = `
+    <div class="eyebrow">완료</div>
+    ${progressBar(8, 8)}
+    <h2>참여해 주셔서 감사합니다</h2>
+    <div class="card">
+      <p id="send-status">${SHEET_ENDPOINT ? "결과를 전송하는 중입니다..." : "아래 버튼을 눌러 응답 데이터를 저장해 주세요. 파일을 연구자에게 전달해 주시면 됩니다."}</p>
+      <textarea id="data-out" readonly>${json}</textarea>
+      <div class="btn-row">
+        <button class="btn secondary" id="copy-btn">클립보드에 복사</button>
+        <button class="btn secondary" id="download-btn">JSON 파일 다운로드</button>
+        <button class="btn" id="restart-btn">처음으로</button>
+      </div>
+    </div>
+  `;
+
+  document.getElementById("copy-btn").addEventListener("click", () => {
+    navigator.clipboard.writeText(json);
+    const b = document.getElementById("copy-btn");
+    b.textContent = "복사됨!";
+    setTimeout(()=>b.textContent="클립보드에 복사", 1500);
+  });
+
+  document.getElementById("download-btn").addEventListener("click", () => {
+    const blob = new Blob([json], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `result_${state.pid || "participant"}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
+  document.getElementById("restart-btn").addEventListener("click", () => {
+    resetState();
+    render();
+    window.scrollTo(0,0);
+  });
+
+  if(SHEET_ENDPOINT){
+    fetch(SHEET_ENDPOINT, {
+      method: "POST",
+      mode: "no-cors",
+      headers: {"Content-Type": "text/plain"},
+      body: json
+    }).then(() => {
+      const status = document.getElementById("send-status");
+      if(status) status.textContent = "결과가 자동으로 전송되었습니다. 만약을 위해 아래에서 다운로드본도 저장해 두시면 좋습니다.";
+    }).catch(() => {
+      const status = document.getElementById("send-status");
+      if(status) status.textContent = "자동 전송에 실패했습니다. 아래에서 JSON 파일을 다운로드하여 연구자에게 전달해 주세요.";
+    });
+  }
+}
+
+/* =========================================================
+   INTERACTIVE WIDGETS
+========================================================= */
+function getInteractiveWidget(topic, idx){
+  if(topic === "A"){
+    if(idx === 0) return `
+      <div class="coffee-scene" data-bind="a0-scene">
+        <svg class="cup-svg" width="80" height="70" viewBox="0 0 80 70">
+          <path d="M10,10 L70,10 L65,55 Q40,65 15,55 Z" fill="#fff" stroke="#A89E8C" stroke-width="1.5"/>
+          <path d="M14,16 L66,16 L62,48 Q40,56 18,48 Z" fill="#6B3F22" data-bind="a0-liquid" style="opacity:0.5;"/>
+          <ellipse cx="40" cy="14" rx="26" ry="3" fill="#3D2412" data-bind="a0-surface" style="opacity:0.6;"/>
+        </svg>
+        <div class="steam s1" data-bind="a0-steam1"></div>
+        <div class="steam s2" data-bind="a0-steam2"></div>
+        <div class="steam s3" data-bind="a0-steam3"></div>
+      </div>
+      <input type="range" class="slider" data-role="a0-temp" min="80" max="100" step="1" value="88">
+      <div class="readout">추출 온도: <b><span data-bind="a0-tempval">88</span>°C</b></div>
+      <div class="bar-label">쓴맛 추출 정도</div>
+      <div class="bar-bg"><div class="bar-fill" data-bind="a0-bar" style="width:40%"></div></div>
+      <div class="zone-msg" data-bind="a0-msg">적정 구간보다 낮습니다</div>
+    `;
+    if(idx === 1) return `
+      <div class="coffee-scene">
+        <div class="particle-grid" data-bind="a1-grid"></div>
+      </div>
+      <input type="range" class="slider" data-role="a1-grind" min="1" max="10" step="1" value="5">
+      <div class="readout">입자 크기(가늠 정도): <b><span data-bind="a1-val">5</span> / 10</b></div>
+      <div class="bar-label">추출 속도</div>
+      <div class="bar-bg"><div class="bar-fill blue" data-bind="a1-bar" style="width:50%"></div></div>
+      <div class="zone-msg" data-bind="a1-msg">적절한 추출 속도입니다</div>
+    `;
+    if(idx === 2) return `
+      <div class="coffee-scene">
+        <svg class="cup-svg" width="100" height="100" viewBox="0 0 100 100">
+          <defs>
+            <clipPath id="cupClipA2"><path d="M16,18 L84,18 L78,72 Q50,82 22,72 Z"/></clipPath>
+          </defs>
+          <path d="M10,12 L90,12 L84,75 Q50,86 16,75 Z" fill="#fff" stroke="#A89E8C" stroke-width="1.5"/>
+          <rect x="16" y="80" width="68" height="0" data-bind="a2-fill" fill="#6B3F22" clip-path="url(#cupClipA2)" style="transition:y .4s ease, height .4s ease, fill .4s ease;"/>
+        </svg>
+      </div>
+      <input type="range" class="slider" data-role="a2-time" min="0" max="4" step="0.25" value="0">
+      <div class="readout">추출 시간: <b><span data-bind="a2-val">0.00</span>분</b></div>
+      <div class="segments">
+        <div class="segment" data-bind="a2-seg0">산미<br>(0~1.5분)</div>
+        <div class="segment" data-bind="a2-seg1">단맛<br>(1~3분)</div>
+        <div class="segment" data-bind="a2-seg2">쓴맛<br>(2.5~4분)</div>
+      </div>
+    `;
+    if(idx === 3) return `
+      <div class="coffee-scene">
+        <div class="ratio-vis">
+          <div class="ratio-bar ratio-coffee" data-bind="a3-cbar" style="height:40%;">원두</div>
+          <div class="ratio-bar ratio-water" data-bind="a3-wbar" style="height:70%;">물</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="bar-label">원두 (g)</div>
+          <input type="range" class="slider" data-role="a3-coffee" min="10" max="30" step="1" value="20">
+          <div class="readout"><b><span data-bind="a3-coffeeval">20</span> g</b></div>
+        </div>
+        <div>
+          <div class="bar-label">물 (ml)</div>
+          <input type="range" class="slider" data-role="a3-water" min="150" max="400" step="10" value="300">
+          <div class="readout"><b><span data-bind="a3-waterval">300</span> ml</b></div>
+        </div>
+      </div>
+      <div class="readout">비율: <b>1 : <span data-bind="a3-ratio">15.0</span></b></div>
+      <div class="zone-msg" data-bind="a3-msg">적정 농도 구간입니다</div>
+    `;
+    if(idx === 4) return `
+      <div class="coffee-scene" data-bind="a4-scene">
+        <svg class="cup-svg" width="100" height="100" viewBox="0 0 100 100">
+          <defs>
+            <clipPath id="cupClipA4"><path d="M16,18 L84,18 L78,72 Q50,82 22,72 Z"/></clipPath>
+          </defs>
+          <path d="M10,12 L90,12 L84,75 Q50,86 16,75 Z" fill="#fff" stroke="#A89E8C" stroke-width="1.5"/>
+          <rect x="16" y="80" width="68" height="0" data-bind="a4-fill" fill="#6B3F22" clip-path="url(#cupClipA4)" style="transition:y .8s ease, height .8s ease, fill .8s ease;"/>
+        </svg>
+        <div class="steam s1" data-bind="a4-steam1" style="opacity:0;"></div>
+        <div class="steam s2" data-bind="a4-steam2" style="opacity:0;"></div>
+      </div>
+      <p style="font-size:13px;color:var(--ink-soft);margin-bottom:10px;">위에서 설정한 온도·입자 크기·시간·비율을 종합해 맛 프로필을 계산합니다.</p>
+      <button class="btn secondary" data-role="a4-calc">맛 프로필 계산하기</button>
+      <div style="margin-top:14px;">
+        <div class="bar-label">산미</div>
+        <div class="bar-bg"><div class="bar-fill" data-bind="a4-sour" style="width:0%"></div></div>
+        <div class="bar-label">단맛</div>
+        <div class="bar-bg"><div class="bar-fill sage" data-bind="a4-sweet" style="width:0%"></div></div>
+        <div class="bar-label">쓴맛</div>
+        <div class="bar-bg"><div class="bar-fill blue" data-bind="a4-bitter" style="width:0%"></div></div>
+      </div>
+      <div class="zone-msg" data-bind="a4-verdict" style="margin-top:10px;display:none;"></div>
+    `;
+  }
+  if(topic === "B"){
+    if(idx === 0) return `
+      <div class="plate-stage" data-bind="b0-stage">
+        <div class="plate plate-left" data-bind="b0-left">판 A</div>
+        <div class="plate plate-right" data-bind="b0-right">판 B</div>
+        <div class="conv-label">맨틀의 대류 → 판이 서서히 이동</div>
+      </div>
+      <button class="btn secondary" data-role="b0-progress">1000년 진행 ▶</button>
+      <div class="readout" style="margin-top:6px;">경과 시간: <b><span data-bind="b0-time">0</span>만 년</b></div>
+    `;
+    if(idx === 1) return `
+      <div class="stress-scene" data-bind="b1-scene">
+        <svg class="rock-svg" viewBox="0 0 200 80" preserveAspectRatio="none">
+          <rect class="rock-body" data-bind="b1-rock" x="0" y="0" width="200" height="80" rx="4"/>
+          <path class="crack-line" data-bind="b1-crack" d="M30,40 L60,20 L85,50 L110,15 L140,45 L170,25"/>
+        </svg>
+      </div>
+      <div class="bar-label" style="margin-top:10px;">암석에 쌓인 응력</div>
+      <div class="bar-bg"><div class="bar-fill" data-bind="b1-bar" style="width:0%"></div></div>
+      <button class="btn secondary" data-role="b1-push" style="margin-top:8px;">응력 가하기</button>
+      <div class="crack-msg" data-bind="b1-msg"></div>
+    `;
+    if(idx === 2) return `
+      <div class="mag-scene" data-bind="b2-scene">
+        <div class="readout">규모(매그니튜드): <b><span data-bind="b2-val">5.0</span></b></div>
+        <div class="energy-dots" data-bind="b2-dots"></div>
+        <div class="bar-label">M4 대비 방출 에너지</div>
+        <div class="bar-bg"><div class="bar-fill blue" data-bind="b2-bar" style="width:5%"></div></div>
+        <div class="zone-msg" data-bind="b2-msg" style="margin-top:6px;">약 32배</div>
+      </div>
+      <input type="range" class="slider" data-role="b2-mag" min="4" max="9" step="0.5" value="5" style="margin-top:10px;">
+    `;
+    if(idx === 3) return `
+      <svg class="epicenter-svg" data-bind="b3-svg" viewBox="0 0 300 160">
+        <g data-bind="b3-rings"></g>
+        <circle cx="150" cy="80" r="6" fill="#C2785A" data-bind="b3-center"/>
+        <text x="150" y="105" text-anchor="middle" font-size="10" fill="#7A766E">진앙</text>
+      </svg>
+      <div class="two-col" style="margin-top:8px;">
+        <button class="btn secondary" data-role="b3-trigger">지진 발생 ▶</button>
+        <button class="btn secondary" data-role="b3-ground">지반: 단단함</button>
+      </div>
+      <div class="zone-msg" data-bind="b3-msg" style="margin-top:8px;">진앙에서 멀어질수록 진도가 약해집니다</div>
+    `;
+    if(idx === 4) return `
+      <div class="fault-cards">
+        <button class="active" data-role="b4-btn" data-type="normal">정단층</button>
+        <button data-role="b4-btn" data-type="reverse">역단층</button>
+        <button data-role="b4-btn" data-type="strike">횡단층</button>
+      </div>
+      <svg class="fault-canvas-svg" data-bind="b4-svg" viewBox="0 0 200 90" preserveAspectRatio="none">
+        <defs>
+          <pattern id="rockPattern" patternUnits="userSpaceOnUse" width="8" height="8">
+            <rect width="8" height="8" fill="#D8D2C4"/>
+            <circle cx="2" cy="2" r="0.8" fill="#A89E8C"/>
+            <circle cx="6" cy="5" r="0.6" fill="#A89E8C"/>
+          </pattern>
+        </defs>
+        <g data-bind="b4-top" style="transition:transform .8s ease;">
+          <rect x="0" y="0" width="200" height="40" fill="url(#rockPattern)" stroke="#A89E8C"/>
+          <text x="100" y="24" text-anchor="middle" font-size="11" fill="#5C5852" font-weight="600">윗블록</text>
+        </g>
+        <g data-bind="b4-bottom" style="transition:transform .8s ease;">
+          <rect x="0" y="50" width="200" height="40" fill="url(#rockPattern)" stroke="#A89E8C"/>
+          <text x="100" y="74" text-anchor="middle" font-size="11" fill="#5C5852" font-weight="600">아래블록</text>
+        </g>
+        <line data-bind="b4-faultline" x1="0" y1="45" x2="200" y2="45" stroke="#C2785A" stroke-width="0" stroke-dasharray="4 4"/>
+      </svg>
+      <div class="zone-msg" data-bind="b4-msg" style="margin-top:8px;">버튼을 눌러 단층의 움직임을 확인해 보세요</div>
+    `;
+  }
+  return "";
+}
+
+/* =========================================================
+   STATIC WIDGETS (same info, no interaction)
+========================================================= */
+function getStaticWidget(topic, idx){
+  if(topic === "A"){
+    if(idx === 0) return `
+      <div class="coffee-scene hot">
+        <svg class="cup-svg" width="80" height="70" viewBox="0 0 80 70">
+          <path d="M10,10 L70,10 L65,55 Q40,65 15,55 Z" fill="#fff" stroke="#A89E8C" stroke-width="1.5"/>
+          <path d="M14,16 L66,16 L62,48 Q40,56 18,48 Z" fill="#6B3F22" style="opacity:0.85;"/>
+          <ellipse cx="40" cy="14" rx="26" ry="3" fill="#3D2412" style="opacity:0.7;"/>
+        </svg>
+      </div>
+      <div class="readout">예시: 추출 온도 <b>92°C</b> (적정 구간 90~96°C)</div>
+      <div class="bar-label">쓴맛 추출 정도</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:60%"></div></div>
+      <div class="zone-msg">적정 구간 내에서는 쓴맛과 다른 맛이 균형을 이룹니다</div>
+    `;
+    if(idx === 1) return `
+      <div class="coffee-scene">
+        <div class="particle-grid" style="grid-template-columns:repeat(12,8px);">
+          ${Array.from({length:24}).map(()=>'<div class="particle" style="width:8px;height:8px;animation:none;"></div>').join('')}
+        </div>
+      </div>
+      <div class="readout">예시: 입자 크기 <b>5 / 10 (중간 굵기)</b></div>
+      <div class="bar-label">추출 속도</div>
+      <div class="bar-bg"><div class="bar-fill blue" style="width:50%"></div></div>
+      <div class="zone-msg">입자가 가늘수록 추출 속도가 빨라지고, 과다추출 위험도 커집니다</div>
+    `;
+    if(idx === 2) return `
+      <div class="coffee-scene">
+        <svg class="cup-svg" width="100" height="100" viewBox="0 0 100 100">
+          <defs><clipPath id="cupClipA2s"><path d="M16,18 L84,18 L78,72 Q50,82 22,72 Z"/></clipPath></defs>
+          <path d="M10,12 L90,12 L84,75 Q50,86 16,75 Z" fill="#fff" stroke="#A89E8C" stroke-width="1.5"/>
+          <rect x="16" y="34" width="68" height="46" fill="#9C5E2A" clip-path="url(#cupClipA2s)"/>
+        </svg>
+      </div>
+      <div class="readout">추출 시간에 따른 맛 변화 구간</div>
+      <div class="segments">
+        <div class="segment active">산미<br>(0~1.5분)</div>
+        <div class="segment active">단맛<br>(1~3분)</div>
+        <div class="segment active">쓴맛<br>(2.5~4분)</div>
+      </div>
+    `;
+    if(idx === 3) return `
+      <div class="coffee-scene">
+        <div class="ratio-vis">
+          <div class="ratio-bar ratio-coffee" style="height:35%;">원두</div>
+          <div class="ratio-bar ratio-water" style="height:75%;">물</div>
+        </div>
+      </div>
+      <div class="readout">예시: 원두 <b>20g</b> + 물 <b>300ml</b></div>
+      <div class="readout">비율: <b>1 : 15.0</b></div>
+      <div class="zone-msg">적정 농도 구간(1:15~1:17)에 해당합니다</div>
+    `;
+    if(idx === 4) return `
+      <div class="coffee-scene hot">
+        <svg class="cup-svg" width="100" height="100" viewBox="0 0 100 100">
+          <defs><clipPath id="cupClipA4s"><path d="M16,18 L84,18 L78,72 Q50,82 22,72 Z"/></clipPath></defs>
+          <path d="M10,12 L90,12 L84,75 Q50,86 16,75 Z" fill="#fff" stroke="#A89E8C" stroke-width="1.5"/>
+          <rect x="16" y="18" width="68" height="62" fill="#6B3F22" clip-path="url(#cupClipA4s)"/>
+        </svg>
+      </div>
+      <div class="readout">예시: 적정 추출 시 맛 프로필</div>
+      <div class="bar-label">산미</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:45%"></div></div>
+      <div class="bar-label">단맛</div>
+      <div class="bar-bg"><div class="bar-fill sage" style="width:65%"></div></div>
+      <div class="bar-label">쓴맛</div>
+      <div class="bar-bg"><div class="bar-fill blue" style="width:50%"></div></div>
+    `;
+  }
+  if(topic === "B"){
+    if(idx === 0) return `
+      <div class="plate-stage">
+        <div class="plate plate-left" style="left:8%;">판 A</div>
+        <div class="plate plate-right" style="right:8%;">판 B</div>
+        <div class="conv-label">맨틀의 대류 → 판이 서서히 이동</div>
+      </div>
+      <div class="zone-msg">판은 1년에 수 cm 정도로 매우 서서히 이동합니다</div>
+    `;
+    if(idx === 1) return `
+      <div class="stress-scene" data-level="3">
+        <svg class="rock-svg" viewBox="0 0 200 80" preserveAspectRatio="none">
+          <rect class="rock-body stressed-3" x="0" y="0" width="200" height="80" rx="4"/>
+          <path class="crack-line shown" d="M30,40 L60,20 L85,50 L110,15 L140,45 L170,25"/>
+        </svg>
+      </div>
+      <div class="bar-label" style="margin-top:10px;">암석에 쌓인 응력 (한계 도달 예시)</div>
+      <div class="bar-bg"><div class="bar-fill" style="width:100%;background:#A63D1F;"></div></div>
+      <div class="crack-msg" style="color:var(--clay);font-weight:600;">응력이 한계를 넘으면 암석이 끊어지며 단층과 지진이 발생합니다</div>
+    `;
+    if(idx === 2) return `
+      <div class="mag-scene" data-level="2">
+        <div class="readout">매그니튜드별 방출 에너지 (M4 기준 배수)</div>
+        <div class="bar-label">M5 — 약 32배</div>
+        <div class="bar-bg"><div class="bar-fill blue" style="width:10%"></div></div>
+        <div class="bar-label">M7 — 약 32,768배</div>
+        <div class="bar-bg"><div class="bar-fill blue" style="width:55%"></div></div>
+        <div class="bar-label">M9 — 약 33,554,432배</div>
+        <div class="bar-bg"><div class="bar-fill blue" style="width:100%"></div></div>
+      </div>
+    `;
+    if(idx === 3) return `
+      <svg class="epicenter-svg" viewBox="0 0 300 160">
+        <circle cx="150" cy="80" r="30" fill="none" stroke="#C2785A" stroke-width="2" opacity="0.7"/>
+        <circle cx="150" cy="80" r="55" fill="none" stroke="#C2785A" stroke-width="1.5" opacity="0.45"/>
+        <circle cx="150" cy="80" r="85" fill="none" stroke="#C2785A" stroke-width="1" opacity="0.25"/>
+        <circle cx="150" cy="80" r="6" fill="#C2785A"/>
+        <text x="150" y="105" text-anchor="middle" font-size="10" fill="#7A766E">진앙</text>
+      </svg>
+      <div class="zone-msg">진앙에서 멀어질수록, 그리고 지반이 약할수록 진도가 달라집니다</div>
+    `;
+    if(idx === 4) return `
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        <div style="flex:1;min-width:160px;">
+          <svg viewBox="0 0 200 90" preserveAspectRatio="none" style="width:100%;height:90px;background:#FBFAF7;border-radius:6px;">
+            <defs><pattern id="rp_n" patternUnits="userSpaceOnUse" width="8" height="8"><rect width="8" height="8" fill="#D8D2C4"/><circle cx="2" cy="2" r="0.8" fill="#A89E8C"/></pattern></defs>
+            <g transform="translate(0,5)"><rect x="0" y="0" width="200" height="40" fill="url(#rp_n)" stroke="#A89E8C"/><text x="100" y="24" text-anchor="middle" font-size="11" fill="#5C5852" font-weight="600">윗블록</text></g>
+            <g transform="translate(0,-5)"><rect x="0" y="50" width="200" height="40" fill="url(#rp_n)" stroke="#A89E8C"/><text x="100" y="74" text-anchor="middle" font-size="11" fill="#5C5852" font-weight="600">아래블록</text></g>
+            <line x1="0" y1="45" x2="200" y2="45" stroke="#C2785A" stroke-width="2" stroke-dasharray="4 4"/>
+          </svg>
+          <div style="text-align:center;font-size:12px;color:var(--ink-soft);margin-top:4px;">정단층</div>
+        </div>
+        <div style="flex:1;min-width:160px;">
+          <svg viewBox="0 0 200 90" preserveAspectRatio="none" style="width:100%;height:90px;background:#FBFAF7;border-radius:6px;">
+            <defs><pattern id="rp_r" patternUnits="userSpaceOnUse" width="8" height="8"><rect width="8" height="8" fill="#D8D2C4"/><circle cx="2" cy="2" r="0.8" fill="#A89E8C"/></pattern></defs>
+            <g transform="translate(0,-5)"><rect x="0" y="0" width="200" height="40" fill="url(#rp_r)" stroke="#A89E8C"/><text x="100" y="24" text-anchor="middle" font-size="11" fill="#5C5852" font-weight="600">윗블록</text></g>
+            <g transform="translate(0,5)"><rect x="0" y="50" width="200" height="40" fill="url(#rp_r)" stroke="#A89E8C"/><text x="100" y="74" text-anchor="middle" font-size="11" fill="#5C5852" font-weight="600">아래블록</text></g>
+            <line x1="0" y1="45" x2="200" y2="45" stroke="#C2785A" stroke-width="2" stroke-dasharray="4 4"/>
+          </svg>
+          <div style="text-align:center;font-size:12px;color:var(--ink-soft);margin-top:4px;">역단층</div>
+        </div>
+        <div style="flex:1;min-width:160px;">
+          <svg viewBox="0 0 200 90" preserveAspectRatio="none" style="width:100%;height:90px;background:#FBFAF7;border-radius:6px;">
+            <defs><pattern id="rp_s" patternUnits="userSpaceOnUse" width="8" height="8"><rect width="8" height="8" fill="#D8D2C4"/><circle cx="2" cy="2" r="0.8" fill="#A89E8C"/></pattern></defs>
+            <g transform="translate(-25,0)"><rect x="0" y="0" width="200" height="40" fill="url(#rp_s)" stroke="#A89E8C"/><text x="100" y="24" text-anchor="middle" font-size="11" fill="#5C5852" font-weight="600">좌</text></g>
+            <g transform="translate(25,0)"><rect x="0" y="50" width="200" height="40" fill="url(#rp_s)" stroke="#A89E8C"/><text x="100" y="74" text-anchor="middle" font-size="11" fill="#5C5852" font-weight="600">우</text></g>
+            <line x1="0" y1="45" x2="200" y2="45" stroke="#C2785A" stroke-width="2" stroke-dasharray="4 4"/>
+          </svg>
+          <div style="text-align:center;font-size:12px;color:var(--ink-soft);margin-top:4px;">횡단층</div>
+        </div>
+      </div>
+    `;
+  }
+  return "";
+}
+
+/* =========================================================
+   INIT INTERACTIVE WIDGETS (event wiring)
+========================================================= */
+function shake(el, heavy){
+  if(!el) return;
+  el.classList.remove("shake-light","shake-heavy");
+  void el.offsetWidth; // restart animation
+  el.classList.add(heavy ? "shake-heavy" : "shake-light");
+}
+function flashRed(el){
+  if(!el) return;
+  el.classList.remove("flash-red");
+  void el.offsetWidth;
+  el.classList.add("flash-red");
+}
+
+function initWidgets(topic, container){
+  const $ = (sel) => container.querySelector(sel);
+  const $$ = (sel) => container.querySelectorAll(sel);
+
+  if(topic === "A"){
+    // A0: 온도 -> 쓴맛 + 컵 색 + 김 + 배경 변화
+    const tempSlider = $('[data-role="a0-temp"]');
+    const scene = $('[data-bind="a0-scene"]');
+    function updateA0(){
+      const t = parseInt(tempSlider.value);
+      $('[data-bind="a0-tempval"]').textContent = t;
+      const pct = Math.max(0, Math.min(100, (t-80)/20*100));
+      $('[data-bind="a0-bar"]').style.width = pct + "%";
+      // scene mood
+      scene.classList.remove("cold","hot","toohot");
+      if(t < 88) scene.classList.add("cold");
+      else if(t > 96) scene.classList.add("toohot");
+      else if(t >= 90) scene.classList.add("hot");
+      // liquid darkness with temp
+      const liquidOpacity = 0.4 + (t-80)/30;
+      $('[data-bind="a0-liquid"]').style.opacity = liquidOpacity;
+      $('[data-bind="a0-surface"]').style.opacity = 0.4 + (t-80)/40;
+      // steam visibility
+      const steamOp = Math.max(0, (t-85)/15);
+      ['a0-steam1','a0-steam2','a0-steam3'].forEach(k => {
+        $(`[data-bind="${k}"]`).style.opacity = steamOp;
+      });
+      // message
+      const msg = $('[data-bind="a0-msg"]');
+      if(t >= 90 && t <= 96){
+        msg.textContent = "✅ 적정 추출 온도 구간입니다";
+        msg.className = "zone-msg";
+      } else if(t < 90){
+        msg.textContent = "적정 구간(90~96°C)보다 낮습니다";
+        msg.className = "zone-msg warn";
+      } else {
+        msg.textContent = "적정 구간(90~96°C)보다 높습니다";
+        msg.className = "zone-msg warn";
+      }
+    }
+    tempSlider.addEventListener("input", () => { updateA0(); state._interactionCount++; });
+    updateA0();
+
+    // A1: 입자크기 -> 추출속도 + 입자 그리드 시각화
+    const grindSlider = $('[data-role="a1-grind"]');
+    const grid = $('[data-bind="a1-grid"]');
+    function updateA1(){
+      const g = parseInt(grindSlider.value);
+      $('[data-bind="a1-val"]').textContent = g;
+      $('[data-bind="a1-bar"]').style.width = (g*10) + "%";
+      // particles: more & smaller as g goes up
+      const cols = Math.min(20, 4 + g*2);
+      const rows = Math.min(8, 2 + Math.floor(g/2));
+      const size = Math.max(3, 16 - g*1.3);
+      grid.style.gridTemplateColumns = `repeat(${cols}, ${size}px)`;
+      grid.innerHTML = "";
+      for(let i=0;i<cols*rows;i++){
+        const p = document.createElement("div");
+        p.className = "particle";
+        p.style.width = size + "px";
+        p.style.height = size + "px";
+        p.style.animationDelay = (i*0.005) + "s";
+        if(g >= 8) p.style.background = "#A63D1F"; // warning color
+        grid.appendChild(p);
+      }
+      const msg = $('[data-bind="a1-msg"]');
+      if(g >= 8){
+        msg.textContent = "⚠ 입자가 매우 가늘어 과다추출 위험이 커집니다";
+        msg.className = "zone-msg warn";
+        shake(grid, false);
+      } else {
+        msg.textContent = "적절한 추출 속도입니다";
+        msg.className = "zone-msg";
+      }
+    }
+    grindSlider.addEventListener("input", () => { updateA1(); state._interactionCount++; });
+    updateA1();
+
+    // A2: 시간 -> 맛 변화 + 컵 채우기 + 색 변화
+    const timeSlider = $('[data-role="a2-time"]');
+    const fillRect = $('[data-bind="a2-fill"]');
+    function updateA2(){
+      const t = parseFloat(timeSlider.value);
+      $('[data-bind="a2-val"]').textContent = t.toFixed(2);
+      $('[data-bind="a2-seg0"]').classList.toggle("active", t > 0 && t <= 1.5);
+      $('[data-bind="a2-seg1"]').classList.toggle("active", t >= 1.0 && t <= 3.0);
+      $('[data-bind="a2-seg2"]').classList.toggle("active", t >= 2.5);
+      // cup fill: more time = more fill + darker
+      const fillH = (t/4) * 62;
+      fillRect.setAttribute("y", 80 - fillH);
+      fillRect.setAttribute("height", fillH);
+      // color shift: yellow → amber → dark brown
+      let color;
+      if(t < 1.5) color = "#D4A24A"; // light amber (sour bright)
+      else if(t < 2.5) color = "#9C5E2A"; // medium brown (sweet)
+      else color = "#3D2412"; // dark brown (bitter)
+      fillRect.setAttribute("fill", color);
+    }
+    timeSlider.addEventListener("input", () => { updateA2(); state._interactionCount++; });
+    updateA2();
+
+    // A3: 비율 -> 농도 + 시각적 바
+    const coffeeSlider = $('[data-role="a3-coffee"]');
+    const waterSlider = $('[data-role="a3-water"]');
+    function updateA3(){
+      const c = parseFloat(coffeeSlider.value);
+      const w = parseFloat(waterSlider.value);
+      $('[data-bind="a3-coffeeval"]').textContent = c;
+      $('[data-bind="a3-waterval"]').textContent = w;
+      const ratio = w / c;
+      $('[data-bind="a3-ratio"]').textContent = ratio.toFixed(1);
+      // visual bars
+      $('[data-bind="a3-cbar"]').style.height = ((c-10)/20*70 + 20) + "%";
+      $('[data-bind="a3-wbar"]').style.height = ((w-150)/250*70 + 20) + "%";
+      const msg = $('[data-bind="a3-msg"]');
+      if(ratio >= 14.5 && ratio <= 17.5){
+        msg.textContent = "✅ 적정 농도 구간(1:15~1:17)입니다";
+        msg.className = "zone-msg";
+      } else if(ratio < 14.5){
+        msg.textContent = "농도가 진한 편입니다";
+        msg.className = "zone-msg warn";
+      } else {
+        msg.textContent = "농도가 연한 편입니다";
+        msg.className = "zone-msg warn";
+      }
+    }
+    coffeeSlider.addEventListener("input", () => { updateA3(); state._interactionCount++; });
+    waterSlider.addEventListener("input", () => { updateA3(); state._interactionCount++; });
+    updateA3();
+
+    // A4: 종합 + dramatic 컵 채우기 + 김 + 흔들림
+    $('[data-role="a4-calc"]').addEventListener("click", () => {
+      state._interactionCount++;
+      const t = parseFloat(tempSlider.value);
+      const g = parseFloat(grindSlider.value);
+      const time = parseFloat(timeSlider.value);
+      const ratio = parseFloat(waterSlider.value) / parseFloat(coffeeSlider.value);
+
+      let sour = Math.max(0, 100 - time*25);
+      let sweet = Math.max(0, 100 - Math.abs(time-2)*40);
+      let bitter = Math.min(100, (t-80)*4 + g*4 + time*12 + Math.max(0,(15-ratio))*3);
+      bitter = Math.max(0, bitter);
+
+      $('[data-bind="a4-sour"]').style.width = sour + "%";
+      $('[data-bind="a4-sweet"]').style.width = sweet + "%";
+      $('[data-bind="a4-bitter"]').style.width = bitter + "%";
+
+      // cup fills dramatically
+      const fill = $('[data-bind="a4-fill"]');
+      fill.setAttribute("y", 18);
+      fill.setAttribute("height", 62);
+      let liquidColor = "#6B3F22";
+      if(bitter > 70) liquidColor = "#2A1208"; // very dark
+      else if(sour > 70) liquidColor = "#B57A2E"; // light
+      fill.setAttribute("fill", liquidColor);
+
+      // steam reveal
+      $('[data-bind="a4-steam1"]').style.opacity = 1;
+      $('[data-bind="a4-steam2"]').style.opacity = 1;
+
+      const scene = $('[data-bind="a4-scene"]');
+      shake(scene, bitter > 70); // dramatic shake if overextracted
+
+      const verdict = $('[data-bind="a4-verdict"]');
+      verdict.style.display = "inline-block";
+      if(bitter > 70){
+        verdict.textContent = "과다추출 경향: 쓰고 떫은 맛이 강해질 수 있습니다";
+        verdict.className = "zone-msg warn";
+      } else if(sour > 70 && bitter < 30){
+        verdict.textContent = "과소추출 경향: 시고 밍밍한 맛이 날 수 있습니다";
+        verdict.className = "zone-msg warn";
+      } else {
+        verdict.textContent = "✨ 적정추출 경향: 균형 잡힌 맛 프로필입니다";
+        verdict.className = "zone-msg";
+      }
+    });
+  }
+
+  if(topic === "B"){
+    // B0: 판 이동 + 진동
+    let b0count = 0;
+    $('[data-role="b0-progress"]').addEventListener("click", () => {
+      state._interactionCount++;
+      b0count = Math.min(b0count + 1, 5);
+      $('[data-bind="b0-time"]').textContent = b0count * 10;
+      $('[data-bind="b0-left"]').style.left = (4 + b0count*8) + "%";
+      $('[data-bind="b0-right"]').style.right = (4 + b0count*8) + "%";
+      shake($('[data-bind="b0-stage"]'), false);
+    });
+
+    // B1: 응력 누적 → 색 변화 → 임계점에서 화면 흔들림 + 단층 균열
+    let stress = 0;
+    const stressBar = $('[data-bind="b1-bar"]');
+    const crackPath = $('[data-bind="b1-crack"]');
+    const rock = $('[data-bind="b1-rock"]');
+    const scene = $('[data-bind="b1-scene"]');
+    const b1msg = $('[data-bind="b1-msg"]');
+    $('[data-role="b1-push"]').addEventListener("click", () => {
+      state._interactionCount++;
+      stress += 25;
+      const level = Math.min(3, Math.floor(stress/25));
+      // bar color & width
+      stressBar.style.width = Math.min(100, stress) + "%";
+      let barColor = "#C2785A";
+      if(stress >= 75) barColor = "#A63D1F";
+      else if(stress >= 50) barColor = "#D4753A";
+      stressBar.style.background = barColor;
+      // rock color
+      rock.classList.remove("stressed-1","stressed-2","stressed-3");
+      if(stress > 0) rock.classList.add("stressed-" + level);
+      // scene background level
+      scene.dataset.level = level;
+      // small shake at level 2+
+      if(stress > 0 && stress < 100){
+        shake(scene, false);
+      }
+      if(stress >= 100){
+        stress = 0;
+        // BIG MOMENT: heavy shake + crack reveal + flash + global page shake
+        crackPath.classList.add("shown");
+        flashRed(scene);
+        shake(scene, true);
+        document.getElementById("app").classList.add("global-shake");
+        setTimeout(() => document.getElementById("app").classList.remove("global-shake"), 900);
+        b1msg.textContent = "💥 응력이 한계를 넘어 단층이 끊어지며 지진이 발생했습니다!";
+        b1msg.style.color = "var(--clay)";
+        b1msg.style.fontWeight = "700";
+        setTimeout(() => {
+          stressBar.style.width = "0%";
+          stressBar.style.background = "#C2785A";
+          crackPath.classList.remove("shown");
+          rock.classList.remove("stressed-1","stressed-2","stressed-3");
+          scene.dataset.level = "0";
+          b1msg.textContent = "";
+        }, 2000);
+      }
+    });
+
+    // B2: 규모 -> 에너지 + 위젯 흔들림 강도 + 색 변화 + 에너지 도트
+    const magSlider = $('[data-role="b2-mag"]');
+    const magScene = $('[data-bind="b2-scene"]');
+    const dotsEl = $('[data-bind="b2-dots"]');
+    function updateB2(){
+      const m = parseFloat(magSlider.value);
+      $('[data-bind="b2-val"]').textContent = m.toFixed(1);
+      const multiple = Math.pow(32, m-4);
+      const barPct = Math.min(100, ((m-4)/5)*100);
+      $('[data-bind="b2-bar"]').style.width = barPct + "%";
+      const display = multiple < 10 ? multiple.toFixed(1) : Math.round(multiple).toLocaleString("ko-KR");
+      $('[data-bind="b2-msg"]').textContent = `M4 대비 약 ${display}배의 에너지`;
+      // color scene by magnitude
+      let level = 0;
+      if(m >= 8) level = 3;
+      else if(m >= 6.5) level = 2;
+      else if(m >= 5.5) level = 1;
+      magScene.dataset.level = level;
+      // energy dots proportional (log-ish)
+      const dotCount = Math.min(60, Math.floor(Math.pow(2, m-4)));
+      dotsEl.innerHTML = "";
+      for(let i=0;i<dotCount;i++){
+        const d = document.createElement("div");
+        d.className = "energy-dot";
+        d.style.animationDelay = (i*0.012) + "s";
+        if(level === 3) d.style.background = "#fff";
+        else if(level === 2) d.style.background = "#5C2E18";
+        dotsEl.appendChild(d);
+      }
+      // shake intensity scales with magnitude
+      if(m >= 5.5) shake(magScene, m >= 7);
+    }
+    magSlider.addEventListener("input", () => { updateB2(); state._interactionCount++; });
+    updateB2();
+
+    // B3: 지진 발생 - SVG 동심원 + 전체 화면 흔들림
+    let ground = "hard";
+    const svg = $('[data-bind="b3-svg"]');
+    const ringsG = $('[data-bind="b3-rings"]');
+    const SVG_NS = "http://www.w3.org/2000/svg";
+    $('[data-role="b3-trigger"]').addEventListener("click", () => {
+      state._interactionCount++;
+      ringsG.innerHTML = "";
+      const isSoft = ground === "soft";
+      const ringConfigs = isSoft ? [40, 70, 110, 150] : [30, 55, 85];
+      ringConfigs.forEach((r, i) => {
+        const c = document.createElementNS(SVG_NS, "circle");
+        c.setAttribute("cx", 150);
+        c.setAttribute("cy", 80);
+        c.setAttribute("r", 6);
+        c.setAttribute("fill", "none");
+        c.setAttribute("stroke", isSoft ? "#A63D1F" : "#C2785A");
+        c.setAttribute("stroke-width", 2.5);
+        c.style.opacity = "0";
+        ringsG.appendChild(c);
+        const delay = i * 180;
+        setTimeout(() => {
+          c.style.transition = "r 1.6s ease-out, opacity 1.6s ease-out, stroke-width 1.6s ease-out";
+          c.setAttribute("r", r);
+          c.style.opacity = "0.9";
+          setTimeout(() => {
+            setTimeout(() => {
+              c.style.opacity = "0";
+              c.setAttribute("stroke-width", "0.5");
+            }, 100);
+          }, 16);
+        }, delay);
+      });
+      // page-wide shake
+      shake(svg, isSoft);
+      const appEl = document.getElementById("app");
+      appEl.classList.remove("global-shake");
+      void appEl.offsetWidth;
+      appEl.classList.add("global-shake");
+      setTimeout(() => appEl.classList.remove("global-shake"), 900);
+      // message update
+      const msg = $('[data-bind="b3-msg"]');
+      msg.textContent = isSoft
+        ? "약한 지반: 진동이 더 멀리, 더 강하게 퍼집니다"
+        : "단단한 지반: 진동이 빠르게 약해집니다";
+    });
+    $('[data-role="b3-ground"]').addEventListener("click", (e) => {
+      state._interactionCount++;
+      ground = ground === "hard" ? "soft" : "hard";
+      e.target.textContent = ground === "hard" ? "지반: 단단함" : "지반: 약함";
+    });
+
+    // B4: 단층 종류 - SVG 블록 이동 + 단층선 강조 + 흔들림
+    const faultBtns = $$('[data-role="b4-btn"]');
+    const b4top = $('[data-bind="b4-top"]');
+    const b4bottom = $('[data-bind="b4-bottom"]');
+    const faultline = $('[data-bind="b4-faultline"]');
+    const b4svg = $('[data-bind="b4-svg"]');
+    const b4msg = $('[data-bind="b4-msg"]');
+    const faultDesc = {
+      normal: "정단층: 양쪽 블록이 서로 멀어지며 한쪽이 아래로 내려갑니다 (장력 환경)",
+      reverse: "역단층: 양쪽 블록이 서로 밀리며 한쪽이 위로 올라갑니다 (압축 환경)",
+      strike: "횡단층: 양쪽 블록이 수평 방향으로 서로 반대로 미끄러집니다"
+    };
+    const faultMoves = {
+      normal:  {top:"translate(0,5px)",  bottom:"translate(0,-5px)"},
+      reverse: {top:"translate(0,-5px)", bottom:"translate(0,5px)"},
+      strike:  {top:"translate(-25px,0)",bottom:"translate(25px,0)"}
+    };
+    faultBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        state._interactionCount++;
+        const type = btn.dataset.type;
+        faultBtns.forEach(b => b.classList.toggle("active", b === btn));
+        // reset position
+        b4top.style.transform = "translate(0,0)";
+        b4bottom.style.transform = "translate(0,0)";
+        faultline.setAttribute("stroke-width", "0");
+        // animate after a beat
+        setTimeout(() => {
+          b4top.style.transform = faultMoves[type].top;
+          b4bottom.style.transform = faultMoves[type].bottom;
+          faultline.setAttribute("stroke-width", "2");
+          shake(b4svg, false);
+        }, 100);
+        b4msg.textContent = faultDesc[type];
+      });
+    });
+    // initial state
+    setTimeout(() => {
+      b4top.style.transform = faultMoves.normal.top;
+      b4bottom.style.transform = faultMoves.normal.bottom;
+      faultline.setAttribute("stroke-width", "2");
+    }, 200);
+  }
+}
+
+/* =========================================================
+   INIT
+========================================================= */
+render();
+</script>
+</body>
+</html>
