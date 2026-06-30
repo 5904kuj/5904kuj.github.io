@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>노을빛 — 해질녘이 가장 두려운 시간이 되지 않도록</title>
+<meta name="description" content="치매 어르신의 불안과 초조를, 약이 아니라 그 사람을 바라보고 반응하는 빛과 소리로 가라앉히는 비약물 인터랙티브 케어." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Gowun+Batang:wght@400;700&display=swap" rel="stylesheet" />
+<link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" />
+<style>
+  :root{
+    --bg:#211A2B;
+    --bg-2:#2A2138;
+    --bg-3:#332843;
+    --amber:#F6B860;
+    --amber-soft:#F8CD86;
+    --rose:#E89684;
+    --sage:#8FBAA9;
+    --text:#F4ECE2;
+    --text-2:#C7BBD0;
+    --text-3:#9286A0;
+    --line:rgba(244,236,226,0.12);
+    --line-2:rgba(244,236,226,0.07);
+    --serif:'Gowun Batang', serif;
+    --sans:'Pretendard','Pretendard Variable',-apple-system,system-ui,sans-serif;
+    --maxw:1120px;
+    --readw:740px;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    font-family:var(--sans);
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  ::selection{background:var(--amber);color:#241a12}
+  a{color:inherit}
+
+  /* ---------- top bar ---------- */
+  .topbar{
+    position:fixed;top:0;left:0;right:0;z-index:50;
+    display:flex;align-items:center;justify-content:space-between;
+    padding:14px clamp(18px,4vw,40px);
+    background:rgba(33,26,43,0);
+    border-bottom:1px solid transparent;
+    transition:background .4s ease,border-color .4s ease;
+    backdrop-filter:blur(0px);
+  }
+  .topbar.solid{
+    background:rgba(28,22,37,0.82);
+    border-bottom:1px solid var(--line-2);
+    backdrop-filter:blur(10px);
+  }
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--serif);font-weight:700;font-size:1.15rem;letter-spacing:.01em}
+  .brand .dot{width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 35% 30%,var(--amber-soft),var(--rose) 75%);box-shadow:0 0 14px 2px rgba(246,184,96,.55)}
+  .navlinks{display:flex;gap:26px;font-size:.86rem;color:var(--text-2)}
+  .navlinks a{text-decoration:none;opacity:.85;transition:opacity .2s,color .2s}
+  .navlinks a:hover{opacity:1;color:var(--amber-soft)}
+  @media(max-width:760px){.navlinks{display:none}}
+
+  /* ---------- hero ---------- */
+  .hero{
+    position:relative;min-height:100svh;
+    display:flex;flex-direction:column;justify-content:center;
+    padding:120px clamp(20px,6vw,72px) 80px;
+    overflow:hidden;
+  }
+  .glow{position:absolute;inset:0;z-index:0;pointer-events:none}
+  .glow::before{
+    content:"";position:absolute;
+    width:130vmax;height:130vmax;left:50%;top:42%;
+    transform:translate(-50%,-50%);
+    background:
+      radial-gradient(circle at 50% 50%, rgba(246,184,96,.30) 0%, rgba(232,150,132,.16) 26%, rgba(33,26,43,0) 55%);
+    animation:breathe 9s ease-in-out infinite;
+  }
+  .glow::after{
+    content:"";position:absolute;
+    width:80vmax;height:80vmax;left:68%;top:78%;
+    transform:translate(-50%,-50%);
+    background:radial-gradient(circle at 50% 50%, rgba(143,186,169,.16) 0%, rgba(33,26,43,0) 60%);
+    animation:breathe 11s ease-in-out infinite reverse;
+  }
+  @keyframes breathe{0%,100%{opacity:.78;transform:translate(-50%,-50%) scale(1)}50%{opacity:1;transform:translate(-50%,-50%) scale(1.08)}}
+  .hero-inner{position:relative;z-index:1;max-width:980px}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:9px;
+    font-size:.78rem;letter-spacing:.22em;color:var(--amber);
+    font-weight:600;margin-bottom:26px;text-transform:uppercase;
+  }
+  .eyebrow::before{content:"";width:26px;height:1px;background:var(--amber);opacity:.7}
+  h1.hero-title{
+    font-family:var(--serif);font-weight:700;
+    font-size:clamp(2.5rem,6.4vw,5.1rem);
+    line-height:1.1;letter-spacing:-.01em;
+    margin-bottom:30px;
+  }
+  h1.hero-title .soft{color:var(--amber-soft)}
+  .hero-sub{
+    font-size:clamp(1.08rem,1.7vw,1.32rem);
+    color:var(--text-2);max-width:660px;line-height:1.85;
+  }
+  .hero-sub b{color:var(--text);font-weight:600}
+  .scrollcue{
+    position:absolute;bottom:34px;left:50%;transform:translateX(-50%);
+    z-index:1;font-size:.74rem;letter-spacing:.2em;color:var(--text-3);
+    display:flex;flex-direction:column;align-items:center;gap:10px;
+  }
+  .scrollcue .bar{width:1px;height:42px;background:linear-gradient(var(--amber),transparent);animation:drop 2.2s ease-in-out infinite}
+  @keyframes drop{0%{transform:scaleY(.3);transform-origin:top;opacity:.4}50%{transform:scaleY(1);opacity:1}100%{transform:scaleY(.3);transform-origin:bottom;opacity:.4}}
+
+  /* ---------- section base ---------- */
+  section.block{
+    position:relative;
+    padding:clamp(72px,11vw,128px) clamp(20px,6vw,72px);
+    max-width:var(--maxw);margin:0 auto;
+  }
+  .sec-eyebrow{
+    font-size:.78rem;letter-spacing:.2em;color:var(--amber);
+    font-weight:600;text-transform:uppercase;margin-bottom:18px;
+    display:flex;align-items:center;gap:12px;
+  }
+  .sec-eyebrow .num{font-family:var(--serif);font-size:.92rem;color:var(--text-3);letter-spacing:0}
+  h2.sec-title{
+    font-family:var(--serif);font-weight:700;
+    font-size:clamp(1.7rem,3.6vw,2.7rem);line-height:1.22;
+    letter-spacing:-.01em;margin-bottom:26px;max-width:760px;
+  }
+  .lead{font-size:clamp(1.05rem,1.45vw,1.22rem);color:var(--text-2);max-width:var(--readw);line-height:1.85}
+  .lead + .lead{margin-top:18px}
+  .lead b{color:var(--text);font-weight:600}
+  .accent{color:var(--amber-soft)}
+  .divider{height:1px;background:var(--line);max-width:var(--maxw);margin:0 auto}
+
+  /* ---------- problem cards ---------- */
+  .pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px}
+  @media(max-width:820px){.pgrid{grid-template-columns:1fr}}
+  .pcard{
+    background:var(--bg-2);border:1px solid var(--line-2);border-radius:16px;
+    padding:28px 26px;
+  }
+  .pcard .ico{font-family:var(--serif);font-size:1.5rem;color:var(--rose);margin-bottom:14px;display:block}
+  .pcard h3{font-size:1.08rem;font-weight:600;margin-bottom:10px}
+  .pcard p{font-size:.96rem;color:var(--text-2);line-height:1.7}
+
+  /* ---------- item / how it works ---------- */
+  .how{display:grid;grid-template-columns:1.05fr .95fr;gap:54px;align-items:center;margin-top:52px}
+  @media(max-width:880px){.how{grid-template-columns:1fr;gap:40px}}
+  .steps{display:flex;flex-direction:column;gap:22px}
+  .step{display:flex;gap:18px;align-items:flex-start}
+  .step .k{
+    flex:0 0 auto;width:38px;height:38px;border-radius:11px;
+    display:grid;place-items:center;font-family:var(--serif);font-weight:700;
+    background:var(--bg-3);color:var(--amber-soft);border:1px solid var(--line);
+  }
+  .step h4{font-size:1.05rem;font-weight:600;margin-bottom:5px}
+  .step p{font-size:.96rem;color:var(--text-2);line-height:1.7}
+  .loopwrap{background:var(--bg-2);border:1px solid var(--line-2);border-radius:20px;padding:30px 24px 22px;text-align:center}
+  .loopwrap .cap{font-size:.82rem;color:var(--text-3);letter-spacing:.12em;margin-top:6px}
+  .loop-svg{width:100%;height:auto;max-width:360px;display:block;margin:0 auto}
+  .loop-dot{offset-path:path('M 180 44 A 136 136 0 0 1 297.8 248 A 136 136 0 0 1 62.2 248 A 136 136 0 0 1 180 44');offset-rotate:0deg;animation:travel 6s linear infinite}
+  @keyframes travel{to{offset-distance:100%}}
+
+  /* ---------- differentiation ---------- */
+  .vs{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:50px}
+  @media(max-width:760px){.vs{grid-template-columns:1fr}}
+  .vscol{border-radius:18px;padding:30px 28px;border:1px solid var(--line-2)}
+  .vscol.them{background:linear-gradient(180deg,rgba(255,255,255,.018),rgba(255,255,255,0));}
+  .vscol.us{background:linear-gradient(180deg,rgba(246,184,96,.10),rgba(246,184,96,.02));border-color:rgba(246,184,96,.28)}
+  .vstag{font-size:.74rem;letter-spacing:.16em;text-transform:uppercase;font-weight:600;margin-bottom:6px}
+  .vscol.them .vstag{color:var(--text-3)}
+  .vscol.us .vstag{color:var(--amber)}
+  .vsname{font-family:var(--serif);font-size:1.3rem;font-weight:700;margin-bottom:18px}
+  .vsname small{font-family:var(--sans);font-size:.82rem;font-weight:400;color:var(--text-3);display:block;margin-top:3px;letter-spacing:.02em}
+  .vsrow{display:flex;gap:11px;padding:11px 0;border-top:1px solid var(--line-2);font-size:.95rem}
+  .vsrow:first-of-type{border-top:none}
+  .vsrow .lab{flex:0 0 88px;color:var(--text-3);font-size:.82rem;padding-top:1px}
+  .vscol.us .vsrow .val{color:var(--text);font-weight:500}
+  .vscol.them .vsrow .val{color:var(--text-2)}
+
+  .mini-loops{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin:6px 0 20px}
+  .mini{display:flex;align-items:center;gap:10px;font-size:.82rem;color:var(--text-2)}
+  .mini svg{display:block}
+
+  .moat{margin-top:48px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media(max-width:820px){.moat{grid-template-columns:1fr}}
+  .moatcard{background:var(--bg-2);border:1px solid var(--line-2);border-radius:14px;padding:24px}
+  .moatcard .t{font-weight:600;color:var(--amber-soft);margin-bottom:8px;font-size:1rem;display:flex;gap:8px;align-items:baseline}
+  .moatcard .t span{font-family:var(--serif);color:var(--text-3);font-size:.85rem}
+  .moatcard p{font-size:.92rem;color:var(--text-2);line-height:1.65}
+
+  /* ---------- customers ---------- */
+  .ctwo{display:grid;grid-template-columns:1fr 1fr;gap:42px;margin-top:48px}
+  @media(max-width:820px){.ctwo{grid-template-columns:1fr;gap:34px}}
+  .clist{list-style:none;display:flex;flex-direction:column;gap:16px}
+  .clist li{display:flex;gap:14px;font-size:.98rem;color:var(--text-2);line-height:1.65}
+  .clist li .m{flex:0 0 auto;color:var(--sage);font-family:var(--serif);font-weight:700;line-height:1.5}
+  .clist li b{color:var(--text);font-weight:600}
+  .csub{font-family:var(--serif);font-size:1.18rem;font-weight:700;margin-bottom:20px;color:var(--text)}
+  .csub .em{color:var(--amber-soft)}
+  .payer{background:var(--bg-2);border:1px solid var(--line-2);border-radius:16px;padding:24px 26px;margin-top:30px;display:flex;align-items:center;gap:18px;flex-wrap:wrap}
+  .payer .p{flex:1 1 200px;font-size:.95rem;color:var(--text-2)}
+  .payer .p b{color:var(--text)}
+  .payer .arrow{color:var(--amber);font-size:1.4rem;font-family:var(--serif)}
+
+  /* ---------- market ---------- */
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:48px}
+  @media(max-width:860px){.stats{grid-template-columns:1fr 1fr}}
+  .stat{background:var(--bg-2);border:1px solid var(--line-2);border-radius:14px;padding:24px 22px}
+  .stat .big{font-family:var(--serif);font-weight:700;font-size:clamp(2rem,3.4vw,2.7rem);color:var(--amber-soft);line-height:1.05;letter-spacing:-.01em}
+  .stat .big .u{font-size:1.05rem;color:var(--text-2);margin-left:3px}
+  .stat .cap{font-size:.85rem;color:var(--text-2);margin-top:9px;line-height:1.5}
+  .chartwrap{margin-top:40px;background:var(--bg-2);border:1px solid var(--line-2);border-radius:18px;padding:30px 26px 22px}
+  .chartwrap .ch-title{font-size:.92rem;color:var(--text-2);margin-bottom:6px}
+  .chartwrap .ch-note{font-size:.8rem;color:var(--text-3);margin-top:14px}
+  .market-note{margin-top:30px}
+
+  /* ---------- social value ---------- */
+  .svgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:48px}
+  @media(max-width:820px){.svgrid{grid-template-columns:1fr}}
+  .svcard{border:1px solid var(--line-2);border-radius:16px;padding:28px 26px;background:linear-gradient(180deg,rgba(255,255,255,.02),rgba(255,255,255,0))}
+  .svcard .who{font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--sage);font-weight:600;margin-bottom:12px}
+  .svcard h3{font-family:var(--serif);font-size:1.15rem;font-weight:700;margin-bottom:9px;line-height:1.4}
+  .svcard p{font-size:.94rem;color:var(--text-2);line-height:1.7}
+  .closing{
+    text-align:center;padding:clamp(70px,12vw,120px) clamp(20px,6vw,40px) 60px;
+    position:relative;
+  }
+  .closing .q{
+    font-family:var(--serif);font-weight:700;
+    font-size:clamp(1.6rem,4vw,2.9rem);line-height:1.4;
+    max-width:820px;margin:0 auto;
+  }
+  .closing .q .hl{color:var(--amber-soft)}
+
+  /* ---------- footer ---------- */
+  footer{border-top:1px solid var(--line-2);padding:42px clamp(20px,6vw,72px);max-width:var(--maxw);margin:0 auto}
+  footer .frow{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-start}
+  footer .fbrand{font-family:var(--serif);font-weight:700;font-size:1.05rem;display:flex;align-items:center;gap:9px}
+  footer .src{font-size:.78rem;color:var(--text-3);line-height:1.7;max-width:560px}
+  footer .src b{color:var(--text-2);font-weight:600}
+
+  /* ---------- reveal ---------- */
+  .reveal{opacity:0;transform:translateY(22px);transition:opacity .8s cubic-bezier(.2,.7,.2,1),transform .8s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
+
+  @media(prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+    .reveal{opacity:1;transform:none}
+    .loop-dot{offset-distance:18%}
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar" id="topbar">
+  <div class="brand"><span class="dot"></span>노을빛</div>
+  <nav class="navlinks">
+    <a href="#problem">문제</a>
+    <a href="#item">아이템</a>
+    <a href="#diff">차별성</a>
+    <a href="#market">시장</a>
+    <a href="#value">사회적 가치</a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="glow" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <span class="eyebrow">비약물 치매 케어 · 인터랙티브 라이트</span>
+    <h1 class="hero-title">해질녘이,<br>가장 두려운 시간이<br>되지 않도록.</h1>
+    <p class="hero-sub">치매 어르신의 불안과 초조를, 약이 아니라 — <b>그 사람을 바라보고 반응하는 빛과 소리</b>로 가라앉힙니다.</p>
+  </div>
+  <div class="scrollcue" aria-hidden="true"><span class="bar"></span>SCROLL</div>
+</header>
+
+<!-- 주제 -->
+<section class="block reveal" id="theme">
+  <div class="sec-eyebrow"><span class="num">01</span>주제</div>
+  <h2 class="sec-title">묶거나 재우는 돌봄에서,<br><span class="accent">보고 반응하는 돌봄</span>으로.</h2>
+  <p class="lead">치매가 깊어지면 많은 어르신이 해질 무렵마다 불안해하고 초조해합니다. 현장에서는 결국 진정제(항정신병약)에 기대게 되죠. <b>노을빛은 약 대신, 어르신의 표정과 움직임을 읽어 그에 맞춰 빛과 소리를 조절하는 비약물 케어</b>입니다.</p>
+  <p class="lead">핵심은 세 단어로 요약됩니다 — <span class="accent">비약물 · 개인 맞춤 · 실시간 반응.</span></p>
+</section>
+
+<div class="divider"></div>
+
+<!-- 해결하고 싶은 문제 -->
+<section class="block reveal" id="problem">
+  <div class="sec-eyebrow"><span class="num">02</span>해결하고 싶은 문제</div>
+  <h2 class="sec-title">치매 돌봄의 가장 어려운 시간, 해질녘.</h2>
+  <p class="lead">대부분의 치매 어르신은 병이 진행되는 동안 불안·초조·공격성 같은 증상을 겪습니다. 특히 해질 무렵 심해지는 <b>일몰증후군</b>은 어르신과 가족, 요양 인력 모두를 지치게 합니다. 그런데 지금의 대응은 한 곳에 막혀 있습니다.</p>
+  <div class="pgrid">
+    <div class="pcard">
+      <span class="ico">℞</span>
+      <h3>약에 의존하게 됩니다</h3>
+      <p>초조함을 가라앉히려 진정제·항정신병약을 쓰지만, 낙상·무기력·부작용이 따라오고 '화학적 억제'라는 윤리 문제도 남습니다.</p>
+    </div>
+    <div class="pcard">
+      <span class="ico">人</span>
+      <h3>사람 손이 부족합니다</h3>
+      <p>인력난 속에서 직원이 어르신을 한 명씩 붙어 달래기란 불가능합니다. 밤이 되면 더 그렇습니다.</p>
+    </div>
+    <div class="pcard">
+      <span class="ico">⊘</span>
+      <h3>맞춤이 없습니다</h3>
+      <p>똑같은 프로그램을 모두에게 적용합니다. 그 사람의 삶도, 지금의 기분 상태도 반영되지 않습니다.</p>
+    </div>
+  </div>
+  <p class="lead" style="margin-top:42px"><b>그래서 우리가 푸는 질문은 하나입니다 —</b> 해질녘의 초조함을, 약 없이, 사람 손을 덜 들이고, 그 사람에게 맞춰 어떻게 가라앉힐 것인가?</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- 창업 아이템 소개 -->
+<section class="block reveal" id="item">
+  <div class="sec-eyebrow"><span class="num">03</span>창업 아이템 소개</div>
+  <h2 class="sec-title">어르신을 보고, 그에 맞춰 스스로 조절하는 빛.</h2>
+  <p class="lead">천장에 프로젝터와 카메라를 하나씩 답니다. 테이블·벽·바닥에 부드러운 빛 콘텐츠가 떠오르고, 카메라가 어르신의 상태를 읽어 빛과 소리를 실시간으로 바꿉니다.</p>
+  <div class="how">
+    <div class="steps">
+      <div class="step"><div class="k">1</div><div><h4>본다</h4><p>카메라가 어르신의 표정과 움직임에서 지금 얼마나 초조하고 각성돼 있는지를 읽습니다.</p></div></div>
+      <div class="step"><div class="k">2</div><div><h4>맞춘다</h4><p>초조해지면 빛과 소리를 천천히 가라앉히고, 너무 위축돼 있으면 부드럽게 끌어올립니다.</p></div></div>
+      <div class="step"><div class="k">3</div><div><h4>기억을 깨운다</h4><p>콘텐츠는 그 어르신의 청년기 음악과 고향 풍경으로 채웁니다. 익숙한 것이 마음을 안정시킵니다.</p></div></div>
+      <div class="step"><div class="k">4</div><div><h4>다시 본다</h4><p>반응이 끝이 아닙니다. 다시 상태를 읽고 또 맞춥니다 — 끊임없이 순환합니다.</p></div></div>
+    </div>
+    <div class="loopwrap">
+      <svg class="loop-svg" viewBox="0 0 360 320" role="img" aria-label="감지에서 판단, 반응으로 이어져 다시 감지로 돌아오는 순환 구조">
+        <defs>
+          <marker id="ah" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+            <path d="M0,0 L6,3 L0,6 Z" fill="#F6B860"></path>
+          </marker>
+        </defs>
+        <circle cx="180" cy="176" r="136" fill="none" stroke="rgba(244,236,226,0.10)" stroke-width="1.5" stroke-dasharray="3 6"></circle>
+        <!-- nodes -->
+        <g font-family="Gowun Batang, serif" text-anchor="middle">
+          <circle cx="180" cy="44" r="32" fill="#332843" stroke="rgba(246,184,96,.45)"></circle>
+          <text x="180" y="50" fill="#F8CD86" font-size="15">감지</text>
+          <circle cx="298" cy="240" r="32" fill="#332843" stroke="rgba(232,150,132,.45)"></circle>
+          <text x="298" y="246" fill="#E89684" font-size="15">판단</text>
+          <circle cx="62" cy="240" r="32" fill="#332843" stroke="rgba(143,186,169,.5)"></circle>
+          <text x="62" y="246" fill="#8FBAA9" font-size="15">반응</text>
+        </g>
+        <!-- arcs -->
+        <path d="M 206 64 A 110 110 0 0 1 286 210" fill="none" stroke="#F6B860" stroke-width="1.6" opacity=".55" marker-end="url(#ah)"></path>
+        <path d="M 266 256 A 110 110 0 0 1 94 256" fill="none" stroke="#F6B860" stroke-width="1.6" opacity=".55" marker-end="url(#ah)"></path>
+        <path d="M 74 210 A 110 110 0 0 1 154 64" fill="none" stroke="#F6B860" stroke-width="1.6" opacity=".55" marker-end="url(#ah)"></path>
+        <circle class="loop-dot" r="5" fill="#F8CD86"></circle>
+        <text x="180" y="182" text-anchor="middle" font-family="Pretendard,sans-serif" font-size="11" fill="#9286A0" letter-spacing="2">계속 반복</text>
+      </svg>
+      <div class="cap">폐쇄 루프 — 보고 · 맞추고 · 다시 본다</div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 차별성 -->
+<section class="block reveal" id="diff">
+  <div class="sec-eyebrow"><span class="num">04</span>차별성</div>
+  <h2 class="sec-title">세계 표준은 '깨우는 빛'.<br>우리는 <span class="accent">'가라앉히는 빛'</span>입니다.</h2>
+  <p class="lead">이 분야의 세계 표준은 네덜란드의 <b>토버타펠(Tovertafel)</b>입니다. 수천 개 요양시설에서 검증된 인터랙티브 투사 게임으로, 치매의 흔한 증상인 <b>무관심(apathy)</b>을 '놀이'로 깨우는 데 목적이 있습니다. 노을빛은 정반대 지점을 노립니다 — 무관심이 아니라 <b>초조함</b>을, 깨우는 게 아니라 <b>가라앉히는</b> 것.</p>
+
+  <div class="vs">
+    <div class="vscol them">
+      <div class="vstag">세계 표준 · 토버타펠</div>
+      <div class="vsname">깨우는 빛 <small>무관심한 어르신을 활성화</small></div>
+      <div class="vsrow"><span class="lab">표적 증상</span><span class="val">무관심 (수동성)</span></div>
+      <div class="vsrow"><span class="lab">작동 방향</span><span class="val">활성화 — 깨운다</span></div>
+      <div class="vsrow"><span class="lab">콘텐츠</span><span class="val">일반 게임 (모두 동일)</span></div>
+      <div class="vsrow"><span class="lab">반응 방식</span><span class="val">손동작에만 반응 (한 방향)</span></div>
+    </div>
+    <div class="vscol us">
+      <div class="vstag">노을빛</div>
+      <div class="vsname">가라앉히는 빛 <small>초조한 어르신을 진정</small></div>
+      <div class="vsrow"><span class="lab">표적 증상</span><span class="val">초조 · 일몰증후군</span></div>
+      <div class="vsrow"><span class="lab">작동 방향</span><span class="val">진정 — 가라앉힌다</span></div>
+      <div class="vsrow"><span class="lab">콘텐츠</span><span class="val">본인 청년기 음악 · 풍경 (맞춤)</span></div>
+      <div class="vsrow"><span class="lab">반응 방식</span><span class="val">상태를 읽고 실시간 조절 (순환)</span></div>
+    </div>
+  </div>
+
+  <div class="mini-loops" aria-hidden="true">
+    <div class="mini">
+      <svg width="150" height="40" viewBox="0 0 150 40"><text x="6" y="24" font-family="Pretendard" font-size="12" fill="#9286A0">손</text><line x1="26" y1="20" x2="116" y2="20" stroke="#9286A0" stroke-width="1.4"></line><polygon points="116,16 124,20 116,24" fill="#9286A0"></polygon><text x="128" y="24" font-family="Pretendard" font-size="12" fill="#9286A0">반응</text></svg>
+      <span>개방 루프 — 멈춤</span>
+    </div>
+    <div class="mini">
+      <svg width="64" height="44" viewBox="0 0 64 44"><circle cx="32" cy="22" r="15" fill="none" stroke="#F6B860" stroke-width="1.6" stroke-dasharray="3 4"></circle><polygon points="44,12 50,16 43,20" fill="#F6B860"></polygon></svg>
+      <span>폐쇄 루프 — 순환</span>
+    </div>
+  </div>
+
+  <p class="lead">개인화에는 과학적 근거가 있습니다. <b>청년기(10~30세)에 듣던 음악은 치매가 깊어져도 기억과 감정을 깨웁니다</b> — 사진이나 말보다 강력하고, 그 시기 곡은 다른 시기 곡보다 훨씬 자주 기억을 불러옵니다. 다른 통로가 막혀도 음악은 닿습니다.</p>
+
+  <div class="moat">
+    <div class="moatcard"><div class="t"><span>i.</span>데이터 해자</div><p>상태를 읽고 조절하는 구조라 '초조 사건 감소 · 약물 사용 감소' 같은 성과가 자동으로 쌓입니다. 이 근거가 곧 영업력이자, 후발주자가 못 따라오는 장벽입니다.</p></div>
+    <div class="moatcard"><div class="t"><span>ii.</span>현지화 해자</div><p>한국 어르신의 청년기 음악·풍경으로 만든 콘텐츠는 외국 회사가 그대로 복제할 수 없습니다.</p></div>
+    <div class="moatcard"><div class="t"><span>iii.</span>가격 우위</div><p>전용 하드웨어 박스가 아니라 일반 프로젝터 + 웹캠 + 소프트웨어. 도입 비용을 1/4~1/5 수준으로 낮춰 중소 시설까지 들어갑니다.</p></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- 주요 고객 및 판매 전략 -->
+<section class="block reveal" id="customers">
+  <div class="sec-eyebrow"><span class="num">05</span>주요 고객 및 판매 전략</div>
+  <h2 class="sec-title">돈을 내는 사람과 혜택을 받는 사람을 나눕니다.</h2>
+  <p class="lead">어르신은 혜택을 받지만 비용은 시설이 냅니다. 사회적 가치를 시설이 '구매할 이유'로 바꾸는 것이 핵심입니다.</p>
+
+  <div class="payer">
+    <div class="p"><b>혜택</b> — 치매 어르신 (불안·초조 완화, 존엄)</div>
+    <div class="arrow">↔</div>
+    <div class="p"><b>지불</b> — 요양원 · 주야간보호센터 · 요양병원</div>
+  </div>
+
+  <div class="ctwo">
+    <div>
+      <div class="csub">누구에게 파는가</div>
+      <ul class="clist">
+        <li><span class="m">·</span><div><b>1차 고객:</b> 요양원·주야간보호센터·요양병원 등 돌봄 시설.</div></li>
+        <li><span class="m">·</span><div><b>확장:</b> 가정용(재가) 버전, 그리고 보험사·지자체가 비용을 대는 B2B2C 모델.</div></li>
+        <li><span class="m">·</span><div><b>연계:</b> 노인장기요양보험 급여·수가와 연결해 시설의 자기부담을 낮춥니다.</div></li>
+      </ul>
+    </div>
+    <div>
+      <div class="csub">어떻게 설득하는가</div>
+      <ul class="clist">
+        <li><span class="m">①</span><div><b>"약과 야간 초조 사건을 줄여드립니다."</b> 시설의 가장 큰 부담을 직접 겨냥합니다.</div></li>
+        <li><span class="m">②</span><div><b>"직원 한 명이 여러 어르신을 동시에 돌봅니다."</b> 인력난 해법으로 제시합니다.</div></li>
+        <li><span class="m">③</span><div><b>월 구독(SaaS) + 저가 하드웨어.</b> 큰 초기 투자 없이 시작하게 합니다.</div></li>
+      </ul>
+    </div>
+  </div>
+  <p class="lead market-note"><b>진입 순서:</b> 파일럿 시설에서 '약물 사용 감소' 데이터를 확보 → 그 근거를 들고 시설·보험·지자체로 확산합니다. 데이터가 쌓일수록 영업이 쉬워지는 구조입니다.</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- 시장분석 -->
+<section class="block reveal" id="market">
+  <div class="sec-eyebrow"><span class="num">06</span>시장분석</div>
+  <h2 class="sec-title">시장이 '유행'이 아니라 인구구조상 무조건 커집니다.</h2>
+  <p class="lead">한국은 이미 초고령사회에 들어섰고, 치매 환자 수는 멈출 수 없는 속도로 늘고 있습니다. 동시에 비용 부담은 국가적 과제가 됐습니다.</p>
+
+  <div class="stats">
+    <div class="stat"><div class="big">97<span class="u">만 명</span></div><div class="cap">2025년 국내 추정 치매 환자. <b>2026년 100만 명 돌파</b> 전망.</div></div>
+    <div class="stat"><div class="big">2,639<span class="u">만 원</span></div><div class="cap">치매 환자 1인당 연간 관리비용 (2023). 시설 거주 시 약 3,138만 원.</div></div>
+    <div class="stat"><div class="big">≈1<span class="u">%</span></div><div class="cap">국가 치매 관리비용이 차지하는 GDP 비중 (2022년 약 20.8조 원).</div></div>
+    <div class="stat"><div class="big">298<span class="u">만 명</span></div><div class="cap">치매 전 단계(경도인지장애) 인구 (2025). 잠재 시장.</div></div>
+  </div>
+
+  <div class="chartwrap">
+    <div class="ch-title">국내 추정 치매 환자 수 전망</div>
+    <svg viewBox="0 0 720 220" width="100%" height="auto" role="img" aria-label="2025년 97만 명에서 2050년 약 220만 명으로 증가하는 치매 환자 수 전망 곡선">
+      <defs>
+        <linearGradient id="area" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stop-color="#F6B860" stop-opacity=".34"></stop>
+          <stop offset="100%" stop-color="#F6B860" stop-opacity="0"></stop>
+        </linearGradient>
+      </defs>
+      <!-- baseline -->
+      <line x1="40" y1="178" x2="700" y2="178" stroke="rgba(244,236,226,0.12)" stroke-width="1"></line>
+      <!-- area + line: x 40->690, y from 150(97만) up to 60(220만) -->
+      <path d="M40,150 C180,140 250,120 330,104 C430,84 560,70 690,52 L690,178 L40,178 Z" fill="url(#area)"></path>
+      <path d="M40,150 C180,140 250,120 330,104 C430,84 560,70 690,52" fill="none" stroke="#F8CD86" stroke-width="2.4" stroke-linecap="round"></path>
+      <!-- points -->
+      <g font-family="Pretendard, sans-serif" font-size="12" fill="#C7BBD0">
+        <circle cx="40" cy="150" r="4.5" fill="#F8CD86"></circle>
+        <text x="40" y="200" text-anchor="middle">2025</text>
+        <text x="40" y="138" text-anchor="middle" fill="#F8CD86" font-family="Gowun Batang">97만</text>
+        <circle cx="120" cy="146" r="4" fill="#F8CD86"></circle>
+        <text x="120" y="200" text-anchor="middle">2026</text>
+        <text x="120" y="132" text-anchor="middle" fill="#C7BBD0" font-size="11">100만 돌파</text>
+        <circle cx="520" cy="74" r="4.5" fill="#F8CD86"></circle>
+        <text x="520" y="200" text-anchor="middle">2044</text>
+        <text x="520" y="62" text-anchor="middle" fill="#F8CD86" font-family="Gowun Batang">200만</text>
+        <circle cx="690" cy="52" r="4.5" fill="#F8CD86"></circle>
+        <text x="690" y="200" text-anchor="end">2050</text>
+        <text x="690" y="40" text-anchor="end" fill="#F8CD86" font-family="Gowun Batang">220만+</text>
+      </g>
+    </svg>
+    <div class="ch-note">자료: 보건복지부 '2023년 치매역학조사', 중앙치매센터 '대한민국 치매현황 2024'</div>
+  </div>
+
+  <p class="lead market-note">세계 시장에서는 토버타펠이 이미 수천 개 시설에서 이 카테고리의 수요를 증명했습니다. 반면 <b>한국형 '진정 · 개인화 · 실시간 반응'의 자리는 비어 있습니다.</b> 여기에 더해 '돌봄 국가책임제'·간병비 급여화 논의가 진행되며 비약물 케어 수요는 더 커지고 있습니다.</p>
+</section>
+
+<div class="divider"></div>
+
+<!-- 사회적 가치 창출 -->
+<section class="block reveal" id="value">
+  <div class="sec-eyebrow"><span class="num">07</span>사회적 가치 창출</div>
+  <h2 class="sec-title">한 번의 개입이 세 곳에 가닿습니다.</h2>
+  <div class="svgrid">
+    <div class="svcard">
+      <div class="who">어르신</div>
+      <h3>존엄을 지키는 진정</h3>
+      <p>약으로 재우는 대신, 익숙한 빛과 음악으로 불안을 가라앉힙니다. 마지막까지 사람으로 대접받는 돌봄입니다.</p>
+    </div>
+    <div class="svcard">
+      <div class="who">가족 · 돌봄 인력</div>
+      <h3>줄어드는 돌봄 부담</h3>
+      <p>야간 초조 사건과 일손 부담이 줄어듭니다. 인력난에 시달리는 현장에 숨통을 틔웁니다.</p>
+    </div>
+    <div class="svcard">
+      <div class="who">사회</div>
+      <h3>약물 의존을 낮춥니다</h3>
+      <p>항정신병약(화학적 억제) 의존이 줄면 부작용·낙상·의료비가 함께 줄어, GDP 1%에 이르는 사회적 부담 완화에 기여합니다.</p>
+    </div>
+  </div>
+</section>
+
+<div class="closing">
+  <div class="glow" aria-hidden="true" style="opacity:.5"></div>
+  <p class="q" style="position:relative">치매를 멈출 수는 없습니다.<br>하지만 <span class="hl">해질녘의 두려움</span>은,<br>바꿀 수 있습니다.</p>
+</div>
+
+<footer>
+  <div class="frow">
+    <div>
+      <div class="fbrand"><span class="brand"><span class="dot"></span></span>노을빛 · Noeulbit</div>
+      <p class="src" style="margin-top:10px">비약물 · 개인 맞춤 · 실시간 반응 치매 인터랙티브 케어</p>
+    </div>
+    <p class="src">
+      <b>자료 출처</b><br>
+      보건복지부 '2023년 치매역학조사' · 중앙치매센터 '대한민국 치매현황 2024' · 국민건강보험 노인장기요양보험 · Tovertafel(Tover) 공개 연구 · 음악-자전적 기억(MEAM) 및 다중감각자극(Snoezelen) 관련 학술 문헌.<br>
+      <span style="color:#7d7189">※ 본 페이지는 사업 아이템 소개용이며 수치는 발표 시점 공개 자료 기준입니다.</span>
+    </p>
+  </div>
+</footer>
+
+<script>
+  // top bar solidify on scroll
+  var tb=document.getElementById('topbar');
+  function onScroll(){ if(window.scrollY>40){tb.classList.add('solid')}else{tb.classList.remove('solid')} }
+  window.addEventListener('scroll',onScroll,{passive:true}); onScroll();
+
+  // scroll reveal
+  var io=new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){e.target.classList.add('in'); io.unobserve(e.target);} });
+  },{threshold:0.12, rootMargin:'0px 0px -8% 0px'});
+  document.querySelectorAll('.reveal').forEach(function(el){io.observe(el)});
+</script>
+</body>
+</html>
